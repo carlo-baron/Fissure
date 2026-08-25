@@ -1,11 +1,12 @@
 #!/bin/bash
 
-g++ src/*.cpp \
-    lib/*.cpp \
-    components/circle/*.cpp \
-    components/rectangle/*.cpp \
+g++ $(find src components -name "*.cpp") \
+    $(find lib -name "*.cpp" 2>/dev/null) \
+    -Icomponents \
     -Icomponents/circle \
+    -Icomponents/gameObject \
     -Icomponents/rectangle \
+    -Icomponents/transform \
     -o run \
     -lraylib -lm -lpthread -ldl -lX11
 
