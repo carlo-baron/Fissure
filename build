@@ -1,0 +1,14 @@
+#!/bin/bash
+
+g++ src/*.cpp \
+    lib/*.cpp \
+    components/circle/*.cpp \
+    components/rectangle/*.cpp \
+    -Icomponents/circle \
+    -Icomponents/rectangle \
+    -o run \
+    -lraylib -lm -lpthread -ldl -lX11
+
+if [ $? -eq 0 ]; then
+    ./run
+fi
