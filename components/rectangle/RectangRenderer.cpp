@@ -12,8 +12,8 @@ void RectangleRenderer::Draw() const {
 	DrawRectangleLines(
 		transform->GetPosition().x,
 		transform->GetPosition().y,
-		this->width,
-		this->height,
+		this->width * transform->GetScale(),
+		this->height * transform->GetScale(),
 		this->color
 	);
 }

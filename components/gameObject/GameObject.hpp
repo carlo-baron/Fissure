@@ -13,5 +13,9 @@ class GameObject{
 	public:
 		GameObject(unique_ptr<IGameTransform> transform, unique_ptr<IDrawable> drawable);
 
+		IGameTransform* GetGameTransform();
+
+		IDrawable* GetDrawable();
+
 		void Update();
 };

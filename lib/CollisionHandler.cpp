@@ -1,10 +1,11 @@
 #include "CollisionHandler.hpp"
+#include "CircleRenderer.hpp"
+#include "GameObject.hpp"
 #include "raymath.h"
-#include <algorithm>
-#include <cmath>
 #include <raylib.h>
 #include <vector>
-#include "../components/rectangle/Rect.hpp"
+
+using namespace std;
 
 Vector2 CircleToCicleMTV(Circle* start, Circle* target){
 	Vector2 collisionDirection = Vector2Normalize(
@@ -18,12 +19,38 @@ Vector2 CircleToCicleMTV(Circle* start, Circle* target){
 	return mtv;
 }
 
-void CollisionHandler(std::vector<Circle *> circles, std::vector<Rect*> rectangles){
+void CollisionHandlerV2(vector<GameObject*> gameObjects){
+	for(int i = 0; i < gameObjects.size(); i++){
+		for(int j = i + 1; j < gameObjects.size(); j++){
+			GameObject* objectA = gameObjects[i];
+			GameObject* objectB = gameObjects[j];
+
+			CircleRenderer* circleA = dynamic_cast<CircleRenderer*>(objectA->GetDrawable());
+			CircleRenderer* circleB = dynamic_cast<CircleRenderer*>(objectB->GetDrawable());
+
+			if(circleA != nullptr && circleB != nullptr){
+				if(CheckCollisionCircles(
+							objectB->GetGameTransform()->GetPosition(),
+							circleB->GetRadius(),
+							objectA->GetGameTransform()->GetPosition(),
+							circleA->GetRadius()
+						)
+					){
+					circleB->SetColor(RED);
+				}else{
+					circleB->SetColor(WHITE);
+				}
+			}
+		}
+	}
+}
+
+void CollisionHandler(vector<Circle *> circles, vector<Rect*> rectangles){
 	CircleCircleCollision(circles);
 	RectangleCircleCollision(rectangles, circles);
 }
 
-void CircleCircleCollision(std::vector<Circle*> circles){
+void CircleCircleCollision(vector<Circle*> circles) {
 	for(int i = 0; i < circles.size(); i++){
 		for(int j = i + 1; j < circles.size(); j++){
 
@@ -42,7 +69,7 @@ void CircleCircleCollision(std::vector<Circle*> circles){
 	}
 }
 
-void RectangleCircleCollision(std::vector<Rect *> rectangles, std::vector<Circle *> circles){
+void RectangleCircleCollision(vector<Rect *> rectangles, vector<Circle *> circles){
 	for(int i = 0; i < rectangles.size(); i++){
 		for(int j = 0; j < circles.size(); j++){
 			Circle* circleRef = circles[j];
@@ -62,13 +89,13 @@ void RectangleCircleCollision(std::vector<Rect *> rectangles, std::vector<Circle
 			)){
 				Vector2 circlePos = circleRef->GetPosition();
 
-				float closeX = std::clamp(circlePos.x, rec.x, rec.x + rec.width);
-				float closeY = std::clamp(circlePos.y, rec.y, rec.y + rec.height);
+				float closeX = clamp(circlePos.x, rec.x, rec.x + rec.width);
+				float closeY = clamp(circlePos.y, rec.y, rec.y + rec.height);
 
 				float dx = circlePos.x - closeX;
 				float dy = circlePos.y - closeY;
 
-				float distance = std::sqrt((dx * dx) + (dy * dy));
+				float distance = sqrt((dx * dx) + (dy * dy));
 
 				if(distance == 0){
 					float left = circlePos.x - rec.x;
@@ -76,7 +103,7 @@ void RectangleCircleCollision(std::vector<Rect *> rectangles, std::vector<Circle
 					float top = circlePos.y - rec.y;
 					float bottom = rec.y + rec.height - circlePos.y;
 
-					float minDistance = std::min({left, right, top, bottom});
+					float minDistance = min({left, right, top, bottom});
 
 					Vector2 collisionDirection;
 

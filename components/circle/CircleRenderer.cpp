@@ -10,3 +10,11 @@ CircleRenderer::CircleRenderer(IGameTransform* transform, float radius, Color co
 void CircleRenderer::Draw() const {
 	DrawCircleLinesV(transform->GetPosition(), this->radius * transform->GetScale(), this->color);
 }
+
+float CircleRenderer::GetRadius(){
+	return this->radius;
+}
+
+void CircleRenderer::SetColor(Color color){
+	this->color = color;
+}

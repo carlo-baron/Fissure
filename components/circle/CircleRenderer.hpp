@@ -14,4 +14,8 @@ class CircleRenderer : public IDrawable{
 		CircleRenderer(IGameTransform* transform, float radius = 5, Color color = WHITE);
 
 		void Draw() const override;
+		
+		float GetRadius();
+
+		void SetColor(Color color);
 };
