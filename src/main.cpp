@@ -4,6 +4,7 @@
 #include "../components/circle/CircleRenderer.hpp"
 #include "../components/transform/GameTransform.hpp"
 #include "../components/gameObject/GameObject.hpp"
+#include "../components/rectangle/RectangleRenderer.hpp"
 
 using namespace std;
 
@@ -25,6 +26,13 @@ int main(){
 		make_unique<CircleRenderer>(transform.get(), 50);
 	GameObject circleObject(std::move(transform), std::move(circleRenderer));
 
+	Vector2 rectanglePosition = {center.x - 50, center.y - 50};
+	unique_ptr<GameTransform> transform1 =
+		make_unique<GameTransform>(rectanglePosition);
+	unique_ptr<RectangleRenderer> rectangleRenderer =
+		make_unique<RectangleRenderer>(transform1.get(), 100, 100);
+	GameObject rectangleObject(std::move(transform1), std::move(rectangleRenderer));
+
 	while(!WindowShouldClose()){
 		Vector2 mousePos = GetMousePosition();
 		mouseCircle.SetPosition(mousePos);
@@ -36,6 +44,7 @@ int main(){
 			ClearBackground(BLACK);
 
 			circleObject.Update();
+			rectangleObject.Update();
 			mouseCircle.Draw();
 
 		EndDrawing();
