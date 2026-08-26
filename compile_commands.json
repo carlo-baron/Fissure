@@ -4,6 +4,8 @@
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
+      "-Wall",
+      "-Wextra",
       "src/main.cpp",
       "-Icomponents",
       "-Icomponents/circle",
@@ -22,6 +24,8 @@
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
+      "-Wall",
+      "-Wextra",
       "components/rectangle/RectangRenderer.cpp",
       "-Icomponents",
       "-Icomponents/circle",
@@ -40,7 +44,29 @@
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
+      "-Wall",
+      "-Wextra",
       "components/rectangle/Rect.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "components/collider/circleCollider/CircleCollider.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "components/collider/circleCollider/CircleCollider.cpp",
       "-Icomponents",
       "-Icomponents/circle",
       "-Icomponents/gameObject",
@@ -58,6 +84,8 @@
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
+      "-Wall",
+      "-Wextra",
       "components/circle/CircleRenderer.cpp",
       "-Icomponents",
       "-Icomponents/circle",
@@ -76,6 +104,8 @@
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
+      "-Wall",
+      "-Wextra",
       "components/circle/Circle.cpp",
       "-Icomponents",
       "-Icomponents/circle",
@@ -94,6 +124,8 @@
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
+      "-Wall",
+      "-Wextra",
       "components/gameObject/GameObject.cpp",
       "-Icomponents",
       "-Icomponents/circle",
@@ -112,6 +144,8 @@
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
+      "-Wall",
+      "-Wextra",
       "components/transform/GameTransform.cpp",
       "-Icomponents",
       "-Icomponents/circle",
@@ -130,6 +164,8 @@
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
+      "-Wall",
+      "-Wextra",
       "lib/CollisionHandler.cpp",
       "-Icomponents",
       "-Icomponents/circle",

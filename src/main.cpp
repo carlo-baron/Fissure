@@ -1,4 +1,6 @@
+#include "collider/circleCollider/CircleCollider.hpp"
 #include "raylib.h"
+#include <utility>
 #include <vector>
 #include <memory>
 #include "../components/circle/CircleRenderer.hpp"
@@ -17,8 +19,6 @@ int main(){
 		GetScreenHeight() / 2.0f
 	};
 
-
-
 	// make factory for this after making a rectangle shape
 	
 	// circle dummy
@@ -26,14 +26,20 @@ int main(){
 		make_unique<GameTransform>(center);
 	unique_ptr<CircleRenderer> circleRenderer =
 		make_unique<CircleRenderer>(transform.get(), 50);
-	GameObject circleObject(std::move(transform), std::move(circleRenderer));
+	unique_ptr<CircleCollider> circleCollider =
+		make_unique<CircleCollider>(transform.get(), 50);
+
+	GameObject circleObject(std::move(transform), std::move(circleRenderer), std::move(circleCollider));
 
 	// mouse circle
 	unique_ptr<GameTransform> transform0 =
 		make_unique<GameTransform>();
 	unique_ptr<CircleRenderer> circleRenderer0 =
 		make_unique<CircleRenderer>(transform0.get(), 20);
-	GameObject mouseObject(std::move(transform0), std::move(circleRenderer0));
+	unique_ptr<CircleCollider> circleCollider0 =
+		make_unique<CircleCollider>(transform0.get(), 30, true, true);
+
+	GameObject mouseObject(std::move(transform0), std::move(circleRenderer0), std::move(circleCollider0));
 
 	vector<GameObject*> gameObjects;
 	gameObjects.push_back(&mouseObject);
