@@ -1,7 +1,9 @@
 #include "CollisionHandler.hpp"
 #include "CircleRenderer.hpp"
 #include "GameObject.hpp"
+#include "collider/circleCollider/CircleCollider.hpp"
 #include "raymath.h"
+#include <iostream>
 #include <raylib.h>
 #include <vector>
 
@@ -20,13 +22,24 @@ Vector2 CircleToCicleMTV(Circle* start, Circle* target){
 }
 
 void CollisionHandlerV2(vector<GameObject*> gameObjects){
-	for(int i = 0; i < gameObjects.size(); i++){
-		for(int j = i + 1; j < gameObjects.size(); j++){
+	for(int i = 0; i < (int)gameObjects.size(); i++){
+		for(int j = i + 1; j < (int)gameObjects.size(); j++){
 			GameObject* objectA = gameObjects[i];
 			GameObject* objectB = gameObjects[j];
 
-			CircleRenderer* circleA = dynamic_cast<CircleRenderer*>(objectA->GetDrawable());
-			CircleRenderer* circleB = dynamic_cast<CircleRenderer*>(objectB->GetDrawable());
+			CircleRenderer* cA = dynamic_cast<CircleRenderer*>(objectA->GetDrawable());
+			CircleRenderer* cB = dynamic_cast<CircleRenderer*>(objectB->GetDrawable());
+
+			CircleCollider* circleA = dynamic_cast<CircleCollider*>(objectA->GetCollider());
+			CircleCollider* circleB = dynamic_cast<CircleCollider*>(objectB->GetCollider());
+
+			if(!circleA || !circleB){
+				continue;
+			}
+
+			if(!circleA->IsEnabled() || !circleA->IsEnabled()){
+				continue;
+			}
 
 			if(circleA != nullptr && circleB != nullptr){
 				if(CheckCollisionCircles(
@@ -36,9 +49,9 @@ void CollisionHandlerV2(vector<GameObject*> gameObjects){
 							circleA->GetRadius()
 						)
 					){
-					circleB->SetColor(RED);
+					cA->SetColor(RED);
 				}else{
-					circleB->SetColor(WHITE);
+					cA->SetColor(WHITE);
 				}
 			}
 		}

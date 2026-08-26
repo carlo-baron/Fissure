@@ -27,7 +27,7 @@ int main(){
 	unique_ptr<CircleRenderer> circleRenderer =
 		make_unique<CircleRenderer>(transform.get(), 50);
 	unique_ptr<CircleCollider> circleCollider =
-		make_unique<CircleCollider>(transform.get(), 50);
+		make_unique<CircleCollider>(transform.get(), circleRenderer->GetRadius(), true);
 
 	GameObject circleObject(std::move(transform), std::move(circleRenderer), std::move(circleCollider));
 
@@ -37,7 +37,7 @@ int main(){
 	unique_ptr<CircleRenderer> circleRenderer0 =
 		make_unique<CircleRenderer>(transform0.get(), 20);
 	unique_ptr<CircleCollider> circleCollider0 =
-		make_unique<CircleCollider>(transform0.get(), 30, true, true);
+		make_unique<CircleCollider>(transform0.get(), circleRenderer0->GetRadius(), true);
 
 	GameObject mouseObject(std::move(transform0), std::move(circleRenderer0), std::move(circleCollider0));
 
