@@ -3,6 +3,7 @@
 #include "GameObject.hpp"
 #include "collider/circleCollider/CircleCollider.hpp"
 #include "raymath.h"
+#include <algorithm>
 #include <iostream>
 #include <raylib.h>
 #include <vector>
