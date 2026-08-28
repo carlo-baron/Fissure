@@ -25,7 +25,7 @@ IDrawable* CircleCollider::GetDrawable() const {
 	return const_cast<CircleCollider*>(this);
 }
 
-Vector2 CircleCollider::GetPosition(){
+Vector2 CircleCollider::GetPosition() const{
 	return this->transform->GetPosition();
 }
 

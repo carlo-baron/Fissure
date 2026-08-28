@@ -15,5 +15,6 @@ class GameObjectFactory{
 		 * @return A Pre-made GameObject with CircleRenderer and Circle Collider
 		 */
 		GameObject CircleObject(Vector2 position, float radius);
+		GameObject RectangleObject(Vector2 position, float width, float height);
 };
 
