@@ -53,5 +53,8 @@ void CircleCircleCollision(GameObject* objectA, GameObject* objectB) {
 		// notify
 		circleB->OnCollision(circleA);
 		circleA->OnCollision(circleB);
+	}else{
+		circleB->OnCollision(nullptr);
+		circleA->OnCollision(nullptr);
 	}
 }

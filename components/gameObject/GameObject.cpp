@@ -36,5 +36,9 @@ void GameObject::Update(){
 }
 
 void GameObject::OnCollision(ICollider* other) const {
-	// what to do after collision
+	if(other){
+		this->drawable->SetColor(RED);
+	}else{
+		this->drawable->SetColor(WHITE);
+	}
 }
