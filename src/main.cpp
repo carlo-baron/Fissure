@@ -37,7 +37,7 @@ int main(){
 	unique_ptr<CircleRenderer> circleRenderer0 =
 		make_unique<CircleRenderer>(transform0.get(), 20);
 	unique_ptr<CircleCollider> circleCollider0 =
-		make_unique<CircleCollider>(transform0.get(), circleRenderer0->GetRadius(), true);
+		make_unique<CircleCollider>(transform0.get(), circleRenderer0->GetRadius() + 10, true, true);
 
 	GameObject mouseObject(std::move(transform0), std::move(circleRenderer0), std::move(circleCollider0));
 
@@ -50,7 +50,7 @@ int main(){
 		Vector2 mousePos = GetMousePosition();
 		mouseObject.GetGameTransform()->SetPosition(mousePos);
 
-		CollisionHandlerV2(gameObjects);
+		CollisionHandler(gameObjects);
 
 		BeginDrawing();
 			ClearBackground(BLACK);

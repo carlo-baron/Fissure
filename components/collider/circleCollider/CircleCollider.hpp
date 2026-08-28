@@ -23,5 +23,8 @@ class CircleCollider : public ICollider, public IDrawable{
 
 		IDrawable* GetDrawable() const override;
 
+		Vector2 GetPosition();
+		void SetPosition(Vector2 position);
+
 		float GetRadius();
 };

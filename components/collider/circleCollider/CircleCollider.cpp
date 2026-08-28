@@ -25,6 +25,14 @@ IDrawable* CircleCollider::GetDrawable() const {
 	return const_cast<CircleCollider*>(this);
 }
 
+Vector2 CircleCollider::GetPosition(){
+	return this->transform->GetPosition();
+}
+
+void CircleCollider::SetPosition(Vector2 position){
+	this->transform->SetPosition(position);
+}
+
 float CircleCollider::GetRadius(){
 	return this->radius;
 }
