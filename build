@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS (Homebrew)
-    g++ -std=c++17 $(find src components -name "*.cpp") \
+    g++ -std=c++17 $(find src components factory -name "*.cpp") \
         $(find lib -name "*.cpp" 2>/dev/null) \
+        -Ifactory \
         -Icomponents \
         -Icomponents/circle \
         -Icomponents/gameObject \
@@ -14,9 +14,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         -o run \
         -lraylib -lm -lpthread -ldl
 else
-    # Linux
-    g++ -std=c++17 $(find src components -name "*.cpp") \
+    g++ -std=c++17 $(find src components factory -name "*.cpp") \
         $(find lib -name "*.cpp" 2>/dev/null) \
+        -Ifactory \
         -Icomponents \
         -Icomponents/circle \
         -Icomponents/gameObject \
@@ -25,7 +25,6 @@ else
         -o run \
         -lraylib -lm -lpthread -ldl -lX11
 fi
-
 if [ $? -eq 0 ]; then
     ./run
 fi
