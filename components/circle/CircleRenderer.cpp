@@ -15,6 +15,10 @@ float CircleRenderer::GetRadius(){
 	return this->radius;
 }
 
+Color CircleRenderer::GetColor() const {
+	return this->color;
+}
+
 void CircleRenderer::SetColor(Color color){
 	this->color = color;
 }

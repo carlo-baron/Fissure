@@ -34,3 +34,21 @@ void RectangleCollider::SetPosition(Vector2 position){ this->transform->SetPosit
 
 float RectangleCollider::GetWidth() { return this->width; }
 float RectangleCollider::GetHeight() { return this->height; }
+
+void RectangleCollider::OnCollision(ICollider* other) const {
+	for(ICollisionListener* listener : this->listeners){
+		listener->OnCollision(other);
+	}
+}
+
+void RectangleCollider::AddListener(ICollisionListener* listener){
+	this->listeners.push_back(listener);
+}
+
+Color RectangleCollider::GetColor() const {
+	return this->color;
+}
+
+void RectangleCollider::SetColor(Color color){
+	this->color = color;
+}

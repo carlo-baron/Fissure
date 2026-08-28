@@ -3,6 +3,9 @@
 #include "IDrawable.hpp"
 #include "../transform/IGameTransform.hpp"
 #include "../ICollider.hpp"
+#include <vector>
+
+using namespace std;
 
 class RectangleCollider : public ICollider, public IDrawable{
 	private:
@@ -12,6 +15,7 @@ class RectangleCollider : public ICollider, public IDrawable{
 		Color color;
 		bool enabled;
 		bool show;
+		vector<ICollisionListener*> listeners;
 
 	public:
 		RectangleCollider(IGameTransform* transform, float width = 20, float height = 20, bool enabled = true, bool show = false);
@@ -27,4 +31,10 @@ class RectangleCollider : public ICollider, public IDrawable{
 
 		float GetWidth();
 		float GetHeight();
+
+		void OnCollision(ICollider* other) const override;
+		void AddListener(ICollisionListener* listener) override;
+
+		Color GetColor() const override;
+		void SetColor(Color color) override;
 };

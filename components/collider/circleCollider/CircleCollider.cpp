@@ -1,4 +1,5 @@
 #include "CircleCollider.hpp"
+#include <iostream>
 
 CircleCollider::CircleCollider(IGameTransform* transform, float radius, bool enabled, bool show){
 	this->transform = transform;
@@ -31,6 +32,24 @@ Vector2 CircleCollider::GetPosition() const{
 
 void CircleCollider::SetPosition(Vector2 position){
 	this->transform->SetPosition(position);
+}
+
+void CircleCollider::OnCollision(ICollider* other) const {
+	for(ICollisionListener* listener : this->listeners){
+		listener->OnCollision(other);
+	}
+}
+
+void CircleCollider::AddListener(ICollisionListener* listener){
+	this->listeners.push_back(listener);
+}
+
+Color CircleCollider::GetColor() const {
+	return this->color;
+}
+
+void CircleCollider::SetColor(Color color){
+	this->color = color;
 }
 
 float CircleCollider::GetRadius(){

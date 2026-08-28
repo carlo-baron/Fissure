@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class GameObject{
+class GameObject : public ICollisionListener {
 	private:
 		unique_ptr<IGameTransform> transform;
 		unique_ptr<IDrawable> drawable;
@@ -24,6 +24,8 @@ class GameObject{
 		IDrawable* GetDrawable();
 
 		ICollider* GetCollider();
+
+		void OnCollision(ICollider* other) const override;
 
 		void Update();
 };

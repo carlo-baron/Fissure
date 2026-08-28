@@ -4,6 +4,9 @@
 #include "../../IDrawable.hpp"
 #include "raylib.h"
 #include "../../transform/IGameTransform.hpp"
+#include <vector>
+
+using namespace std;
 
 class CircleCollider : public ICollider, public IDrawable{
 	private:
@@ -12,6 +15,7 @@ class CircleCollider : public ICollider, public IDrawable{
 		Color color = GREEN;
 		bool enabled;
 		bool show;
+		vector<ICollisionListener*> listeners;
 	
 	public:
 		CircleCollider(IGameTransform* transform, float radius = 10, bool enabled = true, bool show = false);
@@ -25,6 +29,12 @@ class CircleCollider : public ICollider, public IDrawable{
 
 		Vector2 GetPosition() const override;
 		void SetPosition(Vector2 position) override;
+
+		void OnCollision(ICollider* other) const override;
+		void AddListener(ICollisionListener* listener) override;
+
+		Color GetColor() const override;
+		void SetColor(Color color) override;
 
 		float GetRadius();
 };

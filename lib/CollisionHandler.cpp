@@ -49,5 +49,9 @@ void CircleCircleCollision(GameObject* objectA, GameObject* objectB) {
 		Vector2 mtv = Vector2Scale(direction, penetrationDepth);
 
 		circleB->SetPosition(Vector2Add(circleB->GetPosition(), mtv));
+
+		// notify
+		circleB->OnCollision(circleA);
+		circleA->OnCollision(circleB);
 	}
 }
