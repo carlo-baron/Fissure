@@ -2,6 +2,7 @@
 #include <vector>
 #include "../components/gameObject/GameObject.hpp"
 #include "../lib/CollisionHandler.hpp"
+#include "../lib/physics/PhysicsHandler.hpp"
 #include "../factory/gameObject.factory.hpp"
 
 using namespace std;
@@ -33,6 +34,7 @@ int main(){
 		mouseObject.GetGameTransform()->SetPosition(mousePos);
 
 		CollisionHandler(gameObjects);
+		PhysicsHandler(gameObjects);
 
 		BeginDrawing();
 			ClearBackground(BLACK);

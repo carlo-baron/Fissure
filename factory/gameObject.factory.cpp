@@ -32,8 +32,14 @@ GameObject GameObjectFactory::RectangleObject(Vector2 position, float width, flo
 		make_unique<RectangleRenderer>(transform.get(), width, height);
 	unique_ptr<RectangleCollider> rectangleCollider =
 		make_unique<RectangleCollider>(transform.get(), width, height, true);
+	unique_ptr<Rigidbody> rb = make_unique<Rigidbody>(Vector2{100, 0});
 
-	GameObject rectangleObject(std::move(transform), std::move(rectangleRenderer), std::move(rectangleCollider));
+	GameObject rectangleObject(
+			std::move(transform),
+			std::move(rectangleRenderer),
+			std::move(rectangleCollider),
+			std::move(rb)
+		);
 
 	return rectangleObject;
 }
