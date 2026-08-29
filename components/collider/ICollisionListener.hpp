@@ -4,7 +4,8 @@ class ICollider;
 
 class ICollisionListener{
 	public:
-		virtual void OnCollision(ICollider* other) const = 0;
+		virtual void OnCollisionEnter(ICollider* other) const = 0;
+		virtual void OnCollisionExit(ICollider* other) const = 0;
 
 		virtual ~ICollisionListener(){};
 };

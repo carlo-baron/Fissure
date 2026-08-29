@@ -3,11 +3,23 @@
 #include "../components/collider/circleCollider/CircleCollider.hpp"
 #include "../components/collider/rectangleCollider/RectangleCollider.hpp"
 #include <optional>
+#include <set>
+#include <utility>
 #include <vector>
 
 using namespace std;
 
-void CollisionHandler(vector<GameObject*> gameObject);
-optional<Vector2> CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
-optional<Vector2> CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect);
-optional<Vector2> RectangleRectangleCollision(RectangleCollider* rectA, RectangleCollider* rectB);
+class CollisionSystem{
+	private:
+		set<pair<ICollider*, ICollider*>> activeCollisions;
+		void AddActiveColliders(ICollider* colliderA, ICollider* colliderB);
+		int RemoveActiveColliders(ICollider* colliderA, ICollider* colliderB);
+		void ResolveCollision(ICollider* mover, ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv);
+
+	public:
+		void CollisionHandler(vector<GameObject*> gameObject);
+		optional<Vector2> CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
+		optional<Vector2> CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect);
+		optional<Vector2> RectangleRectangleCollision(RectangleCollider* rectA, RectangleCollider* rectB);
+
+};
