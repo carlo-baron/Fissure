@@ -13,7 +13,8 @@ class ICollider{
 		virtual Vector2 GetPosition() const = 0;
 		virtual void SetPosition(Vector2 position) = 0;
 
-		virtual void OnCollision(ICollider* other) const = 0;
+		virtual void CollideWith(ICollider* other) = 0;
+		virtual void OnCollisionEnter(ICollider* other) const = 0;
 		virtual void AddListener(ICollisionListener* listener) = 0;
 
 		virtual ~ICollider() {};

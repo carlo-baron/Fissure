@@ -30,11 +30,12 @@ class CircleCollider : public ICollider, public IDrawable{
 		Vector2 GetPosition() const override;
 		void SetPosition(Vector2 position) override;
 
-		void OnCollision(ICollider* other) const override;
-		void AddListener(ICollisionListener* listener) override;
-
 		Color GetColor() const override;
 		void SetColor(Color color) override;
 
 		float GetRadius();
+
+		void CollideWith(ICollider* other) override;
+		void OnCollisionEnter(ICollider* other) const override;
+		void AddListener(ICollisionListener* listener) override;
 };

@@ -32,9 +32,10 @@ class RectangleCollider : public ICollider, public IDrawable{
 		float GetWidth();
 		float GetHeight();
 
-		void OnCollision(ICollider* other) const override;
-		void AddListener(ICollisionListener* listener) override;
-
 		Color GetColor() const override;
 		void SetColor(Color color) override;
+
+		void OnCollisionEnter(ICollider* other) const override;
+		void AddListener(ICollisionListener* listener) override;
+		void CollideWith(ICollider* other) override;
 };

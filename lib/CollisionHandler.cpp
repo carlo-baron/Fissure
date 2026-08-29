@@ -1,7 +1,10 @@
 #include "CollisionHandler.hpp"
 #include "GameObject.hpp"
 #include "collider/circleCollider/CircleCollider.hpp"
+#include "collider/rectangleCollider/RectangleCollider.hpp"
 #include "raymath.h"
+#include <algorithm>
+#include <optional>
 #include <raylib.h>
 #include <vector>
 
@@ -13,23 +16,34 @@ void CollisionHandler(vector<GameObject*> gameObjects){
 			GameObject* objectA = gameObjects[i];
 			GameObject* objectB = gameObjects[j];
 
-			CircleCircleCollision(objectA, objectB);
-
+			objectA->GetCollider()->CollideWith(objectB->GetCollider());
+			objectB->GetCollider()->CollideWith(objectA->GetCollider());
 		}
 	}
 }
 
-void CircleCircleCollision(GameObject* objectA, GameObject* objectB) {
-	CircleCollider* circleA = dynamic_cast<CircleCollider*>(objectA->GetCollider());
-	CircleCollider* circleB = dynamic_cast<CircleCollider*>(objectB->GetCollider());
+void CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect){
+	if(!circle || !rect) return;
+	if(!circle->IsEnabled() || !rect->IsEnabled()) return;
 
-	if(!circleA || !circleB){
-		return;
-	}
+	float closeX = clamp(circle->GetPosition().x, rect->GetPosition().x, rect->GetPosition().x + rect->GetWidth());
+	float closeY = clamp(circle->GetPosition().y, rect->GetPosition().y, rect->GetPosition().y + rect->GetHeight());
 
-	if(!circleA->IsEnabled() || !circleA->IsEnabled()){
-		return;
+	Vector2 displacementVector = Vector2Subtract(circle->GetPosition(), { closeX, closeY });
+	float distance = Vector2Distance(circle->GetPosition(), { closeX, closeY });
+
+	if(distance <= circle->GetRadius()){
+		rect->OnCollisionEnter(circle);
+		circle->OnCollisionEnter(rect);
+	}else{
+		rect->OnCollisionEnter(nullptr);
+		circle->OnCollisionEnter(nullptr);
 	}
+}
+
+optional<Vector2> CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB) {
+	if(!circleA || !circleB) return nullopt;
+	if(!circleA->IsEnabled() || !circleB->IsEnabled()) return nullopt;
 
 	Vector2 displacementVector = Vector2Subtract(
 			circleB->GetPosition(),
@@ -47,14 +61,9 @@ void CircleCircleCollision(GameObject* objectA, GameObject* objectB) {
 		Vector2 direction = Vector2Normalize(displacementVector);
 		float penetrationDepth = radiusSum - distance;
 		Vector2 mtv = Vector2Scale(direction, penetrationDepth);
-
-		circleB->SetPosition(Vector2Add(circleB->GetPosition(), mtv));
-
-		// notify
-		circleB->OnCollision(circleA);
-		circleA->OnCollision(circleB);
-	}else{
-		circleB->OnCollision(nullptr);
-		circleA->OnCollision(nullptr);
+		
+		return mtv;
 	}
+
+	return nullopt;
 }

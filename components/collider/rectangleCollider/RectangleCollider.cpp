@@ -1,4 +1,6 @@
 #include "RectangleCollider.hpp"
+#include "../circleCollider/CircleCollider.hpp"
+#include "../../../lib/CollisionHandler.hpp"
 
 RectangleCollider::RectangleCollider(IGameTransform* transform, float width, float height, bool enabled, bool show){
 	this->transform = transform;
@@ -35,7 +37,7 @@ void RectangleCollider::SetPosition(Vector2 position){ this->transform->SetPosit
 float RectangleCollider::GetWidth() { return this->width; }
 float RectangleCollider::GetHeight() { return this->height; }
 
-void RectangleCollider::OnCollision(ICollider* other) const {
+void RectangleCollider::OnCollisionEnter(ICollider* other) const {
 	for(ICollisionListener* listener : this->listeners){
 		listener->OnCollision(other);
 	}
@@ -51,4 +53,16 @@ Color RectangleCollider::GetColor() const {
 
 void RectangleCollider::SetColor(Color color){
 	this->color = color;
+}
+
+void RectangleCollider::CollideWith(ICollider* other) {
+	CircleCollider* circle = dynamic_cast<CircleCollider*>(other);
+	if(circle){
+		CircleRectangleCollision(circle, this);
+	}else{
+		RectangleCollider* rect = dynamic_cast<RectangleCollider*>(other);
+		if(rect){
+			// rect to rect
+		}
+	}
 }

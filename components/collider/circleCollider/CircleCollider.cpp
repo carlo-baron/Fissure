@@ -1,5 +1,8 @@
 #include "CircleCollider.hpp"
-#include <iostream>
+#include "../rectangleCollider/RectangleCollider.hpp"
+#include "../../../lib/CollisionHandler.hpp"
+#include <optional>
+#include <raymath.h>
 
 CircleCollider::CircleCollider(IGameTransform* transform, float radius, bool enabled, bool show){
 	this->transform = transform;
@@ -34,14 +37,8 @@ void CircleCollider::SetPosition(Vector2 position){
 	this->transform->SetPosition(position);
 }
 
-void CircleCollider::OnCollision(ICollider* other) const {
-	for(ICollisionListener* listener : this->listeners){
-		listener->OnCollision(other);
-	}
-}
-
-void CircleCollider::AddListener(ICollisionListener* listener){
-	this->listeners.push_back(listener);
+float CircleCollider::GetRadius(){
+	return this->radius;
 }
 
 Color CircleCollider::GetColor() const {
@@ -52,6 +49,27 @@ void CircleCollider::SetColor(Color color){
 	this->color = color;
 }
 
-float CircleCollider::GetRadius(){
-	return this->radius;
+void CircleCollider::OnCollisionEnter(ICollider* other) const {
+	for(ICollisionListener* listener : this->listeners){
+		listener->OnCollision(other);
+	}
+}
+
+void CircleCollider::AddListener(ICollisionListener* listener){
+	this->listeners.push_back(listener);
+}
+
+void CircleCollider::CollideWith(ICollider* other) {
+	CircleCollider* circle = dynamic_cast<CircleCollider*>(other);
+	if(circle){
+		auto mtv = CircleCircleCollision(this, circle);
+		if(mtv){
+			circle->SetPosition(Vector2Add(circle->GetPosition(), *mtv));
+		}
+	}else{
+		RectangleCollider* rect = dynamic_cast<RectangleCollider*>(other);
+		if(rect){
+			CircleRectangleCollision(this, rect);
+		}
+	}
 }
