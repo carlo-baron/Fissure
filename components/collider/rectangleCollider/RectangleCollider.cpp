@@ -1,7 +1,4 @@
 #include "RectangleCollider.hpp"
-#include "../circleCollider/CircleCollider.hpp"
-#include "../../../lib/CollisionHandler.hpp"
-#include <raymath.h>
 
 RectangleCollider::RectangleCollider(IGameTransform* transform, float width, float height, bool enabled, bool show){
 	this->transform = transform;
@@ -56,20 +53,6 @@ void RectangleCollider::SetColor(Color color){
 	this->color = color;
 }
 
-void RectangleCollider::CollideWith(ICollider* other) {
-	CircleCollider* circle = dynamic_cast<CircleCollider*>(other);
-	if(circle){
-		auto mtv = CircleRectangleCollision(circle, this);
-		if(mtv){
-			this->SetPosition(Vector2Add(this->GetPosition(), *mtv));
-		}
-	}else{
-		RectangleCollider* rect = dynamic_cast<RectangleCollider*>(other);
-		if(rect){
-			auto mtv = RectangleRectangleCollision(this, rect);
-			if(mtv){
-				this->SetPosition(Vector2Add(this->GetPosition(), *mtv));
-			}
-		}
-	}
+ShapeType RectangleCollider::GetShapeType() const {
+	return ShapeType::Rectangle;
 }

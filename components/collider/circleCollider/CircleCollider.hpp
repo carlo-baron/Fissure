@@ -35,7 +35,7 @@ class CircleCollider : public ICollider, public IDrawable{
 
 		float GetRadius();
 
-		void CollideWith(ICollider* other) override;
+		ShapeType GetShapeType() const override;
 		void OnCollisionEnter(ICollider* other) const override;
 		void AddListener(ICollisionListener* listener) override;
 };

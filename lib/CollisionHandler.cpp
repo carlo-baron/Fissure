@@ -13,11 +13,42 @@ using namespace std;
 void CollisionHandler(vector<GameObject*> gameObjects){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		for(int j = i + 1; j < (int)gameObjects.size(); j++){
-			GameObject* objectA = gameObjects[i];
-			GameObject* objectB = gameObjects[j];
+			ICollider* colliderA = gameObjects[i]->GetCollider();
+			ICollider* colliderB = gameObjects[j]->GetCollider();
+			if(!colliderA || !colliderB) continue;
 
-			objectA->GetCollider()->CollideWith(objectB->GetCollider());
-			objectB->GetCollider()->CollideWith(objectA->GetCollider());
+			ShapeType shapeA = colliderA->GetShapeType();
+			ShapeType shapeB = colliderB->GetShapeType();
+
+			if(shapeA == ShapeType::Circle && shapeB == ShapeType::Circle){
+				CircleCollider* circleA = dynamic_cast<CircleCollider*>(colliderA);
+				CircleCollider* circleB = dynamic_cast<CircleCollider*>(colliderB);
+				auto mtv = CircleCircleCollision(circleA, circleB);
+				if(mtv){
+					circleB->SetPosition(Vector2Add(circleB->GetPosition(), *mtv));
+				}
+			}else if(shapeA == ShapeType::Circle && shapeB == ShapeType::Rectangle){
+				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderA);
+				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderB);
+				auto mtv = CircleRectangleCollision(circle, rect);
+				if(mtv){
+					circle->SetPosition(Vector2Add(circle->GetPosition(), *mtv));
+				}
+			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Circle){
+				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderA);
+				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderB);
+				auto mtv = CircleRectangleCollision(circle, rect);
+				if(mtv){
+					rect->SetPosition(Vector2Add(rect->GetPosition(), *mtv));
+				}
+			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Rectangle){
+				RectangleCollider* rectA = dynamic_cast<RectangleCollider*>(colliderA);
+				RectangleCollider* rectB = dynamic_cast<RectangleCollider*>(colliderB);
+				auto mtv = RectangleRectangleCollision(rectA, rectB);
+				if(mtv){
+					rectA->SetPosition(Vector2Add(rectA->GetPosition(), *mtv));
+				}
+			}
 		}
 	}
 }
