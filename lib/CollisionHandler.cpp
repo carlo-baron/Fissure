@@ -1,162 +1,116 @@
 #include "CollisionHandler.hpp"
-#include "CircleRenderer.hpp"
 #include "GameObject.hpp"
 #include "collider/circleCollider/CircleCollider.hpp"
+#include "collider/rectangleCollider/RectangleCollider.hpp"
 #include "raymath.h"
 #include <algorithm>
-#include <iostream>
+#include <optional>
 #include <raylib.h>
 #include <vector>
 
 using namespace std;
 
-Vector2 CircleToCicleMTV(Circle* start, Circle* target){
-	Vector2 collisionDirection = Vector2Normalize(
-			Vector2Subtract(target->GetPosition(), start->GetPosition())
-			);
-	float requiredDistance = start->GetRadius() + target->GetRadius();
-	float currentDistance = Vector2Distance(target->GetPosition(), start->GetPosition());
-	float penetration = requiredDistance - currentDistance;
-	Vector2 mtv = Vector2Scale(collisionDirection, penetration);
-
-	return mtv;
-}
-
-void CollisionHandlerV2(vector<GameObject*> gameObjects){
+void CollisionHandler(vector<GameObject*> gameObjects){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		for(int j = i + 1; j < (int)gameObjects.size(); j++){
 			GameObject* objectA = gameObjects[i];
 			GameObject* objectB = gameObjects[j];
 
-			CircleRenderer* cA = dynamic_cast<CircleRenderer*>(objectA->GetDrawable());
-			CircleRenderer* cB = dynamic_cast<CircleRenderer*>(objectB->GetDrawable());
-
-			CircleCollider* circleA = dynamic_cast<CircleCollider*>(objectA->GetCollider());
-			CircleCollider* circleB = dynamic_cast<CircleCollider*>(objectB->GetCollider());
-
-			if(!circleA || !circleB){
-				continue;
-			}
-
-			if(!circleA->IsEnabled() || !circleA->IsEnabled()){
-				continue;
-			}
-
-			if(circleA != nullptr && circleB != nullptr){
-				if(CheckCollisionCircles(
-							objectB->GetGameTransform()->GetPosition(),
-							circleB->GetRadius(),
-							objectA->GetGameTransform()->GetPosition(),
-							circleA->GetRadius()
-						)
-					){
-					cA->SetColor(RED);
-				}else{
-					cA->SetColor(WHITE);
-				}
-			}
+			objectA->GetCollider()->CollideWith(objectB->GetCollider());
+			objectB->GetCollider()->CollideWith(objectA->GetCollider());
 		}
 	}
 }
 
-void CollisionHandler(vector<Circle *> circles, vector<Rect*> rectangles){
-	CircleCircleCollision(circles);
-	RectangleCircleCollision(rectangles, circles);
-}
+optional<Vector2> RectangleRectangleCollision(RectangleCollider *rectA, RectangleCollider *rectB){
+	if(!rectA || !rectB) return nullopt;
+	if(!rectA->IsEnabled() || !rectB->IsEnabled()) return nullopt;
 
-void CircleCircleCollision(vector<Circle*> circles) {
-	for(int i = 0; i < circles.size(); i++){
-		for(int j = i + 1; j < circles.size(); j++){
+	float leftA = rectA->GetPosition().x;
+	float rightA = leftA + rectA->GetWidth();
+	float topA = rectA->GetPosition().y;
+	float bottomA = topA + rectA->GetHeight();
 
-			if(CheckCollisionCircles(
-						circles[i]->GetPosition(), circles[i]->GetRadius(),
-						circles[j]->GetPosition(), circles[j]->GetRadius()
-						)
-				){
+	float leftB = rectB->GetPosition().x;
+	float rightB = leftB + rectB->GetWidth();
+	float topB = rectB->GetPosition().y;
+	float bottomB = topB + rectB->GetHeight();
 
-				Vector2 mtv = CircleToCicleMTV(circles[i], circles[j]);
-				Vector2 newPos = Vector2Add(circles[j]->GetPosition(), mtv);
+	float overlapX = min(rightA, rightB) - max(leftA, leftB);
+	float overlapY = min(bottomA, bottomB) - max(topA, topB);
 
-				circles[j]->SetPosition(newPos);
-			}
+	if(overlapX > 0 && overlapY > 0){
+		if(overlapX < overlapY){
+			float centerAX = (leftA + rightA) / 2;
+			float centerBX = (leftB + rightB) / 2;
+			int dirX = centerAX < centerBX ? -1 : 1;
+			return Vector2{(float)dirX * overlapX, 0};
+		}else{
+			float centerAY = (topA + bottomA) / 2;
+			float centerBY = (topB + bottomB) / 2;
+			int dirY = centerAY < centerBY ? -1 : 1;
+			return Vector2{0, (float)dirY * overlapY};
 		}
 	}
+	return nullopt;
 }
 
-void RectangleCircleCollision(vector<Rect *> rectangles, vector<Circle *> circles){
-	for(int i = 0; i < rectangles.size(); i++){
-		for(int j = 0; j < circles.size(); j++){
-			Circle* circleRef = circles[j];
-			Rect* rectRef = rectangles[i];
+optional<Vector2> CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect){
+	if(!circle || !rect) return nullopt;
+	if(!circle->IsEnabled() || !rect->IsEnabled()) return nullopt;
 
-			Rectangle rec = {
-				rectRef->GetPosition().x,
-				rectRef->GetPosition().y,
-				rectRef->GetWidth(),
-				rectRef->GetHeight()
-			};
+	float closeX = clamp(circle->GetPosition().x, rect->GetPosition().x, rect->GetPosition().x + rect->GetWidth());
+	float closeY = clamp(circle->GetPosition().y, rect->GetPosition().y, rect->GetPosition().y + rect->GetHeight());
+	Vector2 displacementVector = Vector2Subtract(circle->GetPosition(), { closeX, closeY });
+	float distance = Vector2Distance(circle->GetPosition(), { closeX, closeY });
 
-			if(CheckCollisionCircleRec(
-				circleRef->GetPosition(),
-				circleRef->GetRadius(),
-				rec
-			)){
-				Vector2 circlePos = circleRef->GetPosition();
+	if(distance > circle->GetRadius()) return nullopt;
 
-				float closeX = clamp(circlePos.x, rec.x, rec.x + rec.width);
-				float closeY = clamp(circlePos.y, rec.y, rec.y + rec.height);
+	if(distance == 0){
+		float left = circle->GetPosition().x - rect->GetPosition().x;
+		float right = (rect->GetPosition().x + rect->GetWidth()) - circle->GetPosition().x;
+		float top = circle->GetPosition().y - rect->GetPosition().y;
+		float bottom = (rect->GetPosition().y + rect->GetHeight()) - circle->GetPosition().y;
 
-				float dx = circlePos.x - closeX;
-				float dy = circlePos.y - closeY;
+		float minDist = std::min({left, right, top, bottom});
+		Vector2 direction;
+		if(minDist == left) direction = {-1, 0};
+		else if(minDist == right) direction = {1, 0};
+		else if(minDist == top) direction = {0, -1};
+		else direction = {0, 1};
 
-				float distance = sqrt((dx * dx) + (dy * dy));
-
-				if(distance == 0){
-					float left = circlePos.x - rec.x;
-					float right = rec.x + rec.width - circlePos.x;
-					float top = circlePos.y - rec.y;
-					float bottom = rec.y + rec.height - circlePos.y;
-
-					float minDistance = min({left, right, top, bottom});
-
-					Vector2 collisionDirection;
-
-					if(minDistance == left){
-						collisionDirection = {-1, 0};
-					}else if(minDistance == right){
-						collisionDirection = {1, 0};
-					}else if(minDistance == top){
-						collisionDirection = {0, -1};
-					}else{
-						collisionDirection = {0, 1};
-					}
-
-					float penetration = circleRef->GetRadius() + minDistance;
-
-					Vector2 mtv = Vector2Scale(
-						collisionDirection,
-						penetration
-					);
-
-					circleRef->SetPosition(
-						Vector2Add(circlePos, mtv)
-					);
-
-					continue;
-				}
-
-				Vector2 collisionDirection = Vector2Normalize({dx, dy});
-				float penetration = circleRef->GetRadius() - distance;
-
-				Vector2 mtv = Vector2Scale(
-					collisionDirection,
-					penetration
-				);
-
-				circleRef->SetPosition(
-					Vector2Add(circlePos, mtv)
-				);
-			}
-		}
+		float penetrationDepth = circle->GetRadius() + minDist;
+		return Vector2Scale(direction, penetrationDepth);
 	}
+
+	Vector2 direction = Vector2Normalize(displacementVector);
+	float penetrationDepth = circle->GetRadius() - distance;
+	return Vector2Scale(direction, penetrationDepth);
+}
+
+optional<Vector2> CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB) {
+	if(!circleA || !circleB) return nullopt;
+	if(!circleA->IsEnabled() || !circleB->IsEnabled()) return nullopt;
+
+	Vector2 displacementVector = Vector2Subtract(
+			circleB->GetPosition(),
+			circleA->GetPosition()
+		);
+
+	float distance = Vector2Distance(
+			circleB->GetPosition(),
+			circleA->GetPosition()
+		);
+
+	float radiusSum = circleB->GetRadius() + circleA->GetRadius();
+
+	if(distance <= radiusSum){
+		Vector2 direction = Vector2Normalize(displacementVector);
+		float penetrationDepth = radiusSum - distance;
+		Vector2 mtv = Vector2Scale(direction, penetrationDepth);
+		
+		return mtv;
+	}
+
+	return nullopt;
 }

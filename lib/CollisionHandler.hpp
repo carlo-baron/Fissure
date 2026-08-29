@@ -1,13 +1,13 @@
 #pragma once
-#include "../components/circle/Circle.hpp"
-#include "../components/rectangle/Rect.hpp"
 #include "../components/gameObject/GameObject.hpp"
+#include "../components/collider/circleCollider/CircleCollider.hpp"
+#include "../components/collider/rectangleCollider/RectangleCollider.hpp"
+#include <optional>
 #include <vector>
 
 using namespace std;
 
-Vector2 CircleToCicleMTV(Circle* start, Circle* target);
-void CollisionHandlerV2(vector<GameObject*> gameObjects);
-void CollisionHandler(vector<Circle*> circles, vector<Rect *> rectangles);
-void CircleCircleCollision(vector<Circle*> circles);
-void RectangleCircleCollision(vector<Rect *> rectangles, vector<Circle*> circles);
+void CollisionHandler(vector<GameObject*> gameObject);
+optional<Vector2> CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
+optional<Vector2> CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect);
+optional<Vector2> RectangleRectangleCollision(RectangleCollider* rectA, RectangleCollider* rectB);

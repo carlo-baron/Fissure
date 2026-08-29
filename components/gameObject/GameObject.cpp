@@ -9,6 +9,10 @@ GameObject::GameObject(
 	this->transform = std::move(transform);
 	this->drawable = std::move(drawable);
 	this->collider = std::move(collider);
+
+	if(this->collider){
+		this->collider->AddListener(this);
+	}
 }
 
 IGameTransform* GameObject::GetGameTransform(){
@@ -31,3 +35,10 @@ void GameObject::Update(){
 	drawable->Draw();
 }
 
+void GameObject::OnCollision(ICollider* other) const {
+	if(other){
+		this->drawable->SetColor(RED);
+	}else{
+		this->drawable->SetColor(WHITE);
+	}
+}

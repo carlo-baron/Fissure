@@ -14,4 +14,6 @@ class RectangleRenderer : public IDrawable{
 		RectangleRenderer(IGameTransform* transform, float width = 10, float height = 10, Color color = WHITE);
 
 		void Draw() const override;
+		Color GetColor() const override;
+		void SetColor(Color color) override;
 };

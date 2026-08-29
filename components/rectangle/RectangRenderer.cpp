@@ -17,3 +17,11 @@ void RectangleRenderer::Draw() const {
 		this->color
 	);
 }
+
+Color RectangleRenderer::GetColor() const {
+	return this->color;
+}
+
+void RectangleRenderer::SetColor(Color color){
+	this->color = color;
+}

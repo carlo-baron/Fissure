@@ -1,12 +1,8 @@
-#include "collider/circleCollider/CircleCollider.hpp"
 #include "raylib.h"
-#include <utility>
 #include <vector>
-#include <memory>
-#include "../components/circle/CircleRenderer.hpp"
-#include "../components/transform/GameTransform.hpp"
 #include "../components/gameObject/GameObject.hpp"
 #include "../lib/CollisionHandler.hpp"
+#include "../factory/gameObject.factory.hpp"
 
 using namespace std;
 
@@ -19,43 +15,30 @@ int main(){
 		GetScreenHeight() / 2.0f
 	};
 
-	// make factory for this after making a rectangle shape
+	GameObjectFactory gameObjectFactory;
 	
-	// circle dummy
-	unique_ptr<GameTransform> transform =
-		make_unique<GameTransform>(center);
-	unique_ptr<CircleRenderer> circleRenderer =
-		make_unique<CircleRenderer>(transform.get(), 50);
-	unique_ptr<CircleCollider> circleCollider =
-		make_unique<CircleCollider>(transform.get(), circleRenderer->GetRadius(), true);
-
-	GameObject circleObject(std::move(transform), std::move(circleRenderer), std::move(circleCollider));
-
-	// mouse circle
-	unique_ptr<GameTransform> transform0 =
-		make_unique<GameTransform>();
-	unique_ptr<CircleRenderer> circleRenderer0 =
-		make_unique<CircleRenderer>(transform0.get(), 20);
-	unique_ptr<CircleCollider> circleCollider0 =
-		make_unique<CircleCollider>(transform0.get(), circleRenderer0->GetRadius(), true);
-
-	GameObject mouseObject(std::move(transform0), std::move(circleRenderer0), std::move(circleCollider0));
+	// Game Objects
+	GameObject dummyCircle = gameObjectFactory.CircleObject({ center.x, 70 }, 50);
+	GameObject mouseObject = gameObjectFactory.CircleObject({0, 0}, 20);
+	GameObject rectangleObject = gameObjectFactory.RectangleObject(center, 100, 100);
 
 	vector<GameObject*> gameObjects;
+	gameObjects.push_back(&dummyCircle);
 	gameObjects.push_back(&mouseObject);
-	gameObjects.push_back(&circleObject);
+	gameObjects.push_back(&rectangleObject);
 
 
 	while(!WindowShouldClose()){
 		Vector2 mousePos = GetMousePosition();
 		mouseObject.GetGameTransform()->SetPosition(mousePos);
 
-		CollisionHandlerV2(gameObjects);
+		CollisionHandler(gameObjects);
 
 		BeginDrawing();
 			ClearBackground(BLACK);
 
-			circleObject.Update();
+			dummyCircle.Update();
+			rectangleObject.Update();
 			mouseObject.Update();
 
 		EndDrawing();
