@@ -69,7 +69,10 @@ void CircleCollider::CollideWith(ICollider* other) {
 	}else{
 		RectangleCollider* rect = dynamic_cast<RectangleCollider*>(other);
 		if(rect){
-			CircleRectangleCollision(this, rect);
+			auto mtv = CircleRectangleCollision(this, rect);
+			if(mtv){
+				this->SetPosition(Vector2Add(this->GetPosition(), *mtv));
+			}
 		}
 	}
 }

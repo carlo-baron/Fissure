@@ -18,14 +18,14 @@ int main(){
 	GameObjectFactory gameObjectFactory;
 	
 	// Game Objects
-	GameObject dummyCircle = gameObjectFactory.CircleObject(center, 50);
+	GameObject dummyCircle = gameObjectFactory.CircleObject({ center.x, 70 }, 50);
 	GameObject mouseObject = gameObjectFactory.CircleObject({0, 0}, 20);
 	GameObject rectangleObject = gameObjectFactory.RectangleObject(center, 100, 100);
 
 	vector<GameObject*> gameObjects;
 	gameObjects.push_back(&dummyCircle);
 	gameObjects.push_back(&mouseObject);
-	//gameObjects.push_back(&rectangleObject);
+	gameObjects.push_back(&rectangleObject);
 
 
 	while(!WindowShouldClose()){
@@ -38,7 +38,7 @@ int main(){
 			ClearBackground(BLACK);
 
 			dummyCircle.Update();
-			//rectangleObject.Update();
+			rectangleObject.Update();
 			mouseObject.Update();
 
 		EndDrawing();

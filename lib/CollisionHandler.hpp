@@ -9,4 +9,5 @@ using namespace std;
 
 void CollisionHandler(vector<GameObject*> gameObject);
 optional<Vector2> CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
-void CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect);
+optional<Vector2> CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect);
+optional<Vector2> RectangleRectangleCollision(RectangleCollider* rectA, RectangleCollider* rectB);
