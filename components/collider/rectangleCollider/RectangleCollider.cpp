@@ -37,7 +37,13 @@ float RectangleCollider::GetHeight() { return this->height; }
 
 void RectangleCollider::OnCollisionEnter(ICollider* other) const {
 	for(ICollisionListener* listener : this->listeners){
-		listener->OnCollision(other);
+		listener->OnCollisionEnter(other);
+	}
+}
+
+void RectangleCollider::OnCollisionExit(ICollider* other) const {
+	for(ICollisionListener* listener : this->listeners){
+		listener->OnCollisionExit(other);
 	}
 }
 

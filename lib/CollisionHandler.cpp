@@ -10,7 +10,7 @@
 
 using namespace std;
 
-void CollisionHandler(vector<GameObject*> gameObjects){
+void CollisionSystem::CollisionHandler(vector<GameObject*> gameObjects){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		for(int j = i + 1; j < (int)gameObjects.size(); j++){
 			ICollider* colliderA = gameObjects[i]->GetCollider();
@@ -24,36 +24,54 @@ void CollisionHandler(vector<GameObject*> gameObjects){
 				CircleCollider* circleA = dynamic_cast<CircleCollider*>(colliderA);
 				CircleCollider* circleB = dynamic_cast<CircleCollider*>(colliderB);
 				auto mtv = CircleCircleCollision(circleA, circleB);
-				if(mtv){
-					circleB->SetPosition(Vector2Add(circleB->GetPosition(), *mtv));
-				}
+				ResolveCollision(circleB, circleA, circleB, mtv);
+
 			}else if(shapeA == ShapeType::Circle && shapeB == ShapeType::Rectangle){
 				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderA);
 				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderB);
 				auto mtv = CircleRectangleCollision(circle, rect);
-				if(mtv){
-					circle->SetPosition(Vector2Add(circle->GetPosition(), *mtv));
-				}
+				ResolveCollision(circle, circle, rect, mtv);
+
 			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Circle){
 				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderA);
 				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderB);
 				auto mtv = CircleRectangleCollision(circle, rect);
-				if(mtv){
-					rect->SetPosition(Vector2Add(rect->GetPosition(), *mtv));
-				}
+				ResolveCollision(rect, rect, circle, mtv);
+
 			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Rectangle){
 				RectangleCollider* rectA = dynamic_cast<RectangleCollider*>(colliderA);
 				RectangleCollider* rectB = dynamic_cast<RectangleCollider*>(colliderB);
 				auto mtv = RectangleRectangleCollision(rectA, rectB);
-				if(mtv){
-					rectA->SetPosition(Vector2Add(rectA->GetPosition(), *mtv));
-				}
+				ResolveCollision(rectA, rectA, rectB, mtv);
 			}
 		}
 	}
 }
 
-optional<Vector2> RectangleRectangleCollision(RectangleCollider *rectA, RectangleCollider *rectB){
+void CollisionSystem::ResolveCollision(ICollider* mover, ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv){
+	if(mtv){
+		mover->SetPosition(Vector2Add(mover->GetPosition(), *mtv));
+
+		AddActiveColliders(colliderA, colliderB);
+		colliderA->OnCollisionEnter(colliderB);
+		colliderB->OnCollisionEnter(colliderA);
+	}else{
+		if(RemoveActiveColliders(colliderA, colliderB) != 0){
+			colliderA->OnCollisionExit(colliderB);
+			colliderB->OnCollisionExit(colliderA);
+		}
+	}
+}
+
+void CollisionSystem::AddActiveColliders(ICollider* colliderA, ICollider* colliderB){
+	this->activeCollisions.insert({colliderA, colliderB});
+}
+
+int CollisionSystem::RemoveActiveColliders(ICollider* colliderA, ICollider* colliderB){
+	return this->activeCollisions.erase({colliderA, colliderB});
+}
+
+optional<Vector2> CollisionSystem::RectangleRectangleCollision(RectangleCollider *rectA, RectangleCollider *rectB){
 	if(!rectA || !rectB) return nullopt;
 	if(!rectA->IsEnabled() || !rectB->IsEnabled()) return nullopt;
 
@@ -86,7 +104,7 @@ optional<Vector2> RectangleRectangleCollision(RectangleCollider *rectA, Rectangl
 	return nullopt;
 }
 
-optional<Vector2> CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect){
+optional<Vector2> CollisionSystem::CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect){
 	if(!circle || !rect) return nullopt;
 	if(!circle->IsEnabled() || !rect->IsEnabled()) return nullopt;
 
@@ -119,7 +137,7 @@ optional<Vector2> CircleRectangleCollision(CircleCollider* circle, RectangleColl
 	return Vector2Scale(direction, penetrationDepth);
 }
 
-optional<Vector2> CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB) {
+optional<Vector2> CollisionSystem::CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB) {
 	if(!circleA || !circleB) return nullopt;
 	if(!circleA->IsEnabled() || !circleB->IsEnabled()) return nullopt;
 

@@ -17,6 +17,7 @@ int main(){
 	};
 
 	GameObjectFactory gameObjectFactory;
+	CollisionSystem collisionSystem;
 	
 	// Game Objects
 	GameObject dummyCircle = gameObjectFactory.CircleObject({ center.x, 70 }, 50);
@@ -33,7 +34,7 @@ int main(){
 		Vector2 mousePos = GetMousePosition();
 		mouseObject.GetGameTransform()->SetPosition(mousePos);
 
-		CollisionHandler(gameObjects);
+		collisionSystem.CollisionHandler(gameObjects);
 		PhysicsHandler(gameObjects);
 
 		BeginDrawing();

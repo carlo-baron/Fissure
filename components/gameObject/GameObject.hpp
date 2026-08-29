@@ -30,7 +30,8 @@ class GameObject : public ICollisionListener {
 
 		Rigidbody* GetRigidbody();
 
-		void OnCollision(ICollider* other) const override;
+		void OnCollisionEnter(ICollider* other) const override;
+		void OnCollisionExit(ICollider* other) const override;
 
 		void Update();
 };

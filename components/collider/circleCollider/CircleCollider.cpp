@@ -47,7 +47,13 @@ void CircleCollider::SetColor(Color color){
 
 void CircleCollider::OnCollisionEnter(ICollider* other) const {
 	for(ICollisionListener* listener : this->listeners){
-		listener->OnCollision(other);
+		listener->OnCollisionEnter(other);
+	}
+}
+
+void CircleCollider::OnCollisionExit(ICollider* other) const {
+	for(ICollisionListener* listener : this->listeners){
+		listener->OnCollisionExit(other);
 	}
 }
 
