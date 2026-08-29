@@ -1,14 +1,18 @@
 #include "GameObject.hpp"
 #include "IDrawable.hpp"
+#include <raylib.h>
+#include <raymath.h>
 
 GameObject::GameObject(
 	unique_ptr<IGameTransform> transform,
 	unique_ptr<IDrawable> drawable,
-	unique_ptr<ICollider> collider
+	unique_ptr<ICollider> collider,
+	unique_ptr<Rigidbody> rigidbody
 ){
 	this->transform = std::move(transform);
 	this->drawable = std::move(drawable);
 	this->collider = std::move(collider);
+	this->rigidbody = std::move(rigidbody);
 
 	if(this->collider){
 		this->collider->AddListener(this);
@@ -25,6 +29,10 @@ IDrawable* GameObject::GetDrawable(){
 
 ICollider* GameObject::GetCollider(){
 	return collider.get();
+}
+
+Rigidbody* GameObject::GetRigidbody(){
+	return rigidbody.get();
 }
 
 void GameObject::Update(){
