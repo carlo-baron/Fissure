@@ -2,13 +2,53 @@
 #include <raylib.h>
 #include <raymath.h>
 
-void PhysicsSystem::PhysicsHandler(vector<GameObject *> gameObjects){
+PhysicsSystem::PhysicsSystem(vector<GameObject *> gameObjects){
+	this->gameObjects = gameObjects;
+
+	for(GameObject* gameObject : gameObjects){
+		ICollider* collider = gameObject->GetCollider();
+		if(collider){
+			collider->AddListener(this);
+			Rigidbody* rb = gameObject->GetRigidbody();
+			this->collRbMap.insert({collider, rb});
+		}
+	}
+}
+
+void PhysicsSystem::PhysicsHandler(){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		GameObject* object = gameObjects[i];
 		Rigidbody* rb = object->GetRigidbody();
 		if(!rb || rb->GetType() == RigidbodyType::Static) continue;
 		IGameTransform* transform = object->GetGameTransform();
-		
+
+		if(rb->GetGravity() > 0){
+			rb->SetVelocity({ rb->GetVelocity().x, this->gravityAcceleration * rb->GetGravity() * GetFrameTime()});
+		}
+
 		transform->SetPosition(Vector2Add(transform->GetPosition(), rb->GetVelocity()));
-		// 
-	}}
+	}
+}
+
+void PhysicsSystem::OnCollisionEnter(ICollider* self, ICollider* other) const {
+	// impulse-momentum
+	Rigidbody* rbA = collRbMap.at(self);
+	Rigidbody* rbB = collRbMap.at(other);
+
+	float finalVelocityX = ResolveInelasticCollision(rbA->GetMass(), rbA->GetVelocity().x, rbB->GetMass(), rbB->GetVelocity().x);
+	float finalVelocityY = ResolveInelasticCollision(rbA->GetMass(), rbA->GetVelocity().y, rbB->GetMass(), rbB->GetVelocity().y);
+
+	rbA->SetVelocity({finalVelocityX, finalVelocityY});
+	rbB->SetVelocity({finalVelocityX, finalVelocityY});
+}
+
+void PhysicsSystem::OnCollisionExit(ICollider* self, ICollider* other) const {
+
+}
+
+float PhysicsSystem::ResolveInelasticCollision(float mass1, float velocity1, float mass2, float velocity2) const {
+	float numerator = (mass1 * velocity1) + (mass2 * velocity2);
+	float denominator = mass1 + mass2;
+
+	return numerator / denominator;
+}

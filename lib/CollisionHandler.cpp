@@ -10,7 +10,11 @@
 
 using namespace std;
 
-void CollisionSystem::CollisionHandler(vector<GameObject*> gameObjects){
+CollisionSystem::CollisionSystem(vector<GameObject*> gameObjects){
+	this->gameObjects = gameObjects; 
+}
+
+void CollisionSystem::CollisionHandler(){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		for(int j = i + 1; j < (int)gameObjects.size(); j++){
 			ICollider* colliderA = gameObjects[i]->GetCollider();
@@ -53,12 +57,12 @@ void CollisionSystem::ResolveCollision(ICollider* mover, ICollider* colliderA, I
 		mover->SetPosition(Vector2Add(mover->GetPosition(), *mtv));
 
 		AddActiveColliders(colliderA, colliderB);
-		colliderA->OnCollisionEnter(colliderB);
-		colliderB->OnCollisionEnter(colliderA);
+		colliderA->OnCollisionEnter(colliderA, colliderB);
+		colliderB->OnCollisionEnter(colliderB, colliderA);
 	}else{
 		if(RemoveActiveColliders(colliderA, colliderB) != 0){
-			colliderA->OnCollisionExit(colliderB);
-			colliderB->OnCollisionExit(colliderA);
+			colliderA->OnCollisionExit(colliderA, colliderB);
+			colliderB->OnCollisionExit(colliderB, colliderA);
 		}
 	}
 }

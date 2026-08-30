@@ -11,13 +11,16 @@ using namespace std;
 
 class CollisionSystem{
 	private:
+		vector<GameObject*> gameObjects;
 		set<pair<ICollider*, ICollider*>> activeCollisions;
 		void AddActiveColliders(ICollider* colliderA, ICollider* colliderB);
 		int RemoveActiveColliders(ICollider* colliderA, ICollider* colliderB);
 		void ResolveCollision(ICollider* mover, ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv);
 
 	public:
-		void CollisionHandler(vector<GameObject*> gameObject);
+	  CollisionSystem(vector<GameObject*> gameObjects);
+
+		void CollisionHandler();
 		optional<Vector2> CircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
 		optional<Vector2> CircleRectangleCollision(CircleCollider* circle, RectangleCollider* rect);
 		optional<Vector2> RectangleRectangleCollision(RectangleCollider* rectA, RectangleCollider* rectB);
