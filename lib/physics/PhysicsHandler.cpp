@@ -6,11 +6,13 @@ PhysicsSystem::PhysicsSystem(vector<GameObject *> gameObjects){
 	this->gameObjects = gameObjects;
 
 	for(GameObject* gameObject : gameObjects){
-		ICollider* collider = gameObject->GetCollider();
+		ICollider* collider = gameObject->GetComponent<ICollider>();
 		if(collider){
 			collider->AddListener(this);
-			Rigidbody* rb = gameObject->GetRigidbody();
-			this->collRbMap.insert({collider, rb});
+			Rigidbody* rb = gameObject->GetComponent<Rigidbody>();
+			if(rb){
+				this->collRbMap.insert({collider, rb});
+			}
 		}
 	}
 }
@@ -18,9 +20,11 @@ PhysicsSystem::PhysicsSystem(vector<GameObject *> gameObjects){
 void PhysicsSystem::PhysicsHandler(){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		GameObject* object = gameObjects[i];
-		Rigidbody* rb = object->GetRigidbody();
-		if(!rb || rb->GetType() == RigidbodyType::Static) continue;
-		IGameTransform* transform = object->GetGameTransform();
+		Rigidbody* rb = object->GetComponent<Rigidbody>();
+
+		if(!rb || rb->GetType() == RigidbodyType::Static || rb->GetType() == RigidbodyType::Kinematic) continue;
+
+		IGameTransform* transform = object->GetComponent<IGameTransform>();
 
 		if(rb->GetGravity() > 0){
 			rb->SetVelocity({ rb->GetVelocity().x, this->gravityAcceleration * rb->GetGravity() * GetFrameTime()});
@@ -31,15 +35,26 @@ void PhysicsSystem::PhysicsHandler(){
 }
 
 void PhysicsSystem::OnCollisionEnter(ICollider* self, ICollider* other) const {
+	auto itA = collRbMap.find(self);
+	auto itB = collRbMap.find(other);
+	if(itA == collRbMap.end() || itB == collRbMap.end()) return;
+
 	// impulse-momentum
 	Rigidbody* rbA = collRbMap.at(self);
 	Rigidbody* rbB = collRbMap.at(other);
 
+	if(!rbA || !rbB) return;
+
 	float finalVelocityX = ResolveInelasticCollision(rbA->GetMass(), rbA->GetVelocity().x, rbB->GetMass(), rbB->GetVelocity().x);
 	float finalVelocityY = ResolveInelasticCollision(rbA->GetMass(), rbA->GetVelocity().y, rbB->GetMass(), rbB->GetVelocity().y);
 
-	rbA->SetVelocity({finalVelocityX, finalVelocityY});
-	rbB->SetVelocity({finalVelocityX, finalVelocityY});
+	if(rbA->GetType() == RigidbodyType::Dynamic){
+		rbA->SetVelocity({finalVelocityX, finalVelocityY});
+	}
+
+	if(rbB->GetType() == RigidbodyType::Dynamic){
+		rbB->SetVelocity({finalVelocityX, finalVelocityY});
+	}
 }
 
 void PhysicsSystem::OnCollisionExit(ICollider* self, ICollider* other) const {

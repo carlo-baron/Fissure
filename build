@@ -1,8 +1,9 @@
 #!/bin/bash
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    g++ -std=c++17 $(find src components factory -name "*.cpp") \
+    g++ -std=c++17 $(find src components factory customBehaviours -name "*.cpp") \
         $(find lib -name "*.cpp" 2>/dev/null) \
+				-IcustomBehaviours \
         -Ifactory \
         -Icomponents \
         -Icomponents/circle \
@@ -14,9 +15,10 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         -o run \
         -lraylib -lm -lpthread -ldl
 else
-    g++ -std=c++17 $(find src components factory -name "*.cpp") \
+    g++ -std=c++17 $(find src components factory customBehaviours -name "*.cpp") \
         $(find lib -name "*.cpp" 2>/dev/null) \
         -Ifactory \
+				-IcustomBehaviours \
         -Icomponents \
         -Icomponents/circle \
         -Icomponents/gameObject \
