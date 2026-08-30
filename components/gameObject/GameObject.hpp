@@ -7,6 +7,14 @@
 #include "../ICustomBehaviour.hpp"
 using namespace std;
 
+/**
+ * @brief Composition root: a game entity made of components.
+ *
+ * A GameObject owns at most one component of each kind — a transform and
+ * a drawable (required), plus an optional collider, rigidbody and custom
+ * behaviour — and owns them exclusively (unique_ptr). Components are
+ * fetched through GetComponent<T>().
+ */
 class GameObject{
 	private:
 		unique_ptr<IGameTransform> transform;
@@ -15,6 +23,21 @@ class GameObject{
 		unique_ptr<Rigidbody> rigidbody;
 		unique_ptr<ICustomBehaviour> customBehaviour;
 	public:
+		/**
+		 * @brief Assembles the object from its components, taking exclusive ownership of them.
+		 *
+		 * The optional components may be null — the object then simply
+		 * doesn't collide, isn't simulated, or runs no custom logic. Once
+		 * every component is in place the constructor calls
+		 * customBehaviour->Start(this), which is how the behaviour learns
+		 * its owner (see ICustomBehaviour::Start()).
+		 *
+		 * @param transform Position/rotation/scale of the object. Required.
+		 * @param drawable How the object renders itself. Required.
+		 * @param collider Collision shape. Optional — pass nullptr for none.
+		 * @param rigidbody Mass/velocity data for the physics simulation. Optional.
+		 * @param customBehaviour Optional per-object logic.
+		 */
 		GameObject(
 			unique_ptr<IGameTransform> transform,
 			unique_ptr<IDrawable> drawable,
@@ -23,9 +46,23 @@ class GameObject{
 			unique_ptr<ICustomBehaviour> customBehaviour = nullptr
 		);
 
+		/**
+		 * @brief Renders the drawable, then the collider's debug outline if a collider is present.
+		 */
 		void Draw();
+		/**
+		 * @brief Runs the custom behaviour's per-frame update, if one is present.
+		 */
 		void Update();
 
+		/**
+		 * @brief Returns the requested component, or nullptr if the object doesn't have one.
+		 *
+		 * @tparam T The component interface to look up (IGameTransform,
+		 * IDrawable, ICollider, Rigidbody or ICustomBehaviour). The
+		 * specializations below map each interface to its member.
+		 * @return A non-owning pointer to the component, or nullptr.
+		 */
 		template<typename T>
 		T* GetComponent();
 };
