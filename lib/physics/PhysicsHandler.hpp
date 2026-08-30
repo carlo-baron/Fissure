@@ -9,6 +9,8 @@ class PhysicsSystem : public ICollisionListener{
 		unordered_map<ICollider*, Rigidbody*> collRbMap;
 		float gravityAcceleration = 150;
 
+		float ResolveInelasticCollision(float mass1, float velocity1, float mass2, float velocity2) const;
+
 	public:
 		PhysicsSystem(vector<GameObject*> gameObject);
 

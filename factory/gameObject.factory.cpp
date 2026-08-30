@@ -19,8 +19,14 @@ GameObject GameObjectFactory::CircleObject(Vector2 position, float radius){
 		make_unique<CircleRenderer>(transform.get(), radius);
 	unique_ptr<CircleCollider> circleCollider =
 		make_unique<CircleCollider>(transform.get(), radius, true);
+	unique_ptr<Rigidbody> rb = make_unique<Rigidbody>();
 
-	GameObject circleObject(std::move(transform), std::move(circleRenderer), std::move(circleCollider));
+	GameObject circleObject(
+			std::move(transform),
+			std::move(circleRenderer),
+			std::move(circleCollider),
+			std::move(rb)
+		);
 
 	return circleObject;
 }

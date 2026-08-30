@@ -37,6 +37,8 @@ int main(){
 	
 	// Variables
 	float speed = 20.0f;
+	auto recRb = rectangleObject.GetRigidbody();
+	auto dummyRb = dummyCircle.GetRigidbody();
 
 	while(!WindowShouldClose()){
 		Vector2 mousePos = GetMousePosition();
@@ -47,6 +49,13 @@ int main(){
 		physicsSystem.PhysicsHandler();
 
 		// rectangleObject.GetRigidbody()->SetVelocity({speed * GetFrameTime(), 0});
+		if(recRb){
+			rectangleObject.GetRigidbody()->SetGravity(0);
+		}
+
+		if(dummyRb){
+			dummyCircle.GetRigidbody()->SetMass(5);
+		}
 
 		BeginDrawing();
 			ClearBackground(BLACK);
