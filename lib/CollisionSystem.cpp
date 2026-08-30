@@ -1,4 +1,4 @@
-#include "CollisionHandler.hpp"
+#include "CollisionSystem.hpp"
 #include "GameObject.hpp"
 #include "collider/circleCollider/CircleCollider.hpp"
 #include "collider/rectangleCollider/RectangleCollider.hpp"
@@ -119,6 +119,12 @@ optional<Vector2> CollisionSystem::CircleRectangleCollision(CircleCollider* circ
 
 	if(distance > circle->GetRadius()) return nullopt;
 
+	// distance == 0 means the circle's center sits exactly on the closest
+	// point of the rectangle (i.e. the center is inside the rect or on
+	// its boundary), so the displacement vector has no direction to
+	// normalize. Fall back to pushing the circle out through the nearest
+	// rectangle side instead: penetration = radius + distance from the
+	// center to that side.
 	if(distance == 0){
 		float left = circle->GetPosition().x - rect->GetPosition().x;
 		float right = (rect->GetPosition().x + rect->GetWidth()) - circle->GetPosition().x;
