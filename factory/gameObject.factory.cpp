@@ -7,6 +7,7 @@
 #include "../components/circle/CircleRenderer.hpp"
 #include "../components/gameObject/GameObject.hpp"
 #include "../components/rectangle/RectangleRenderer.hpp"
+#include "../customBehaviours/rectangle/RectangleBehaviour.hpp"
 
 using namespace std;
 
@@ -34,17 +35,23 @@ GameObject GameObjectFactory::CircleObject(Vector2 position, float radius){
 GameObject GameObjectFactory::RectangleObject(Vector2 position, float width, float height){
 	unique_ptr<GameTransform> transform =
 		make_unique<GameTransform>(position);
+
 	unique_ptr<RectangleRenderer> rectangleRenderer =
 		make_unique<RectangleRenderer>(transform.get(), width, height);
+
 	unique_ptr<RectangleCollider> rectangleCollider =
 		make_unique<RectangleCollider>(transform.get(), width, height, true);
+
 	unique_ptr<Rigidbody> rb = make_unique<Rigidbody>();
+
+	unique_ptr<RectangleBehaviour> custom = make_unique<RectangleBehaviour>();
 
 	GameObject rectangleObject(
 			std::move(transform),
 			std::move(rectangleRenderer),
 			std::move(rectangleCollider),
-			std::move(rb)
+			std::move(rb),
+			std::move(custom)
 		);
 
 	return rectangleObject;

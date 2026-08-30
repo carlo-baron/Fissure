@@ -7,16 +7,14 @@ GameObject::GameObject(
 	unique_ptr<IGameTransform> transform,
 	unique_ptr<IDrawable> drawable,
 	unique_ptr<ICollider> collider,
-	unique_ptr<Rigidbody> rigidbody
+	unique_ptr<Rigidbody> rigidbody,
+	unique_ptr<ICustomBehaviour> customBehaviour
 ){
 	this->transform = std::move(transform);
 	this->drawable = std::move(drawable);
 	this->collider = std::move(collider);
 	this->rigidbody = std::move(rigidbody);
-
-	if(this->collider){
-		this->collider->AddListener(this);
-	}
+	this->customBehaviour = std::move(customBehaviour);
 }
 
 IGameTransform* GameObject::GetGameTransform(){
@@ -36,21 +34,13 @@ Rigidbody* GameObject::GetRigidbody(){
 }
 
 void GameObject::Draw(){
+	drawable->Draw();
+
 	if(collider){
 		collider->GetDrawable()->Draw();
 	}
 
-	drawable->Draw();
-}
-
-void GameObject::OnCollisionEnter(ICollider* self, ICollider* other) const {
-	if(other){
-		this->drawable->SetColor(RED);
-	}
-}
-
-void GameObject::OnCollisionExit(ICollider* self, ICollider* other) const {
-	if(other){
-		this->drawable->SetColor(WHITE);
+	if(customBehaviour){
+		customBehaviour->Update();
 	}
 }
