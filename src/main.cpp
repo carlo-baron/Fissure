@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 #include "../components/gameObject/GameObject.hpp"
-#include "../lib/CollisionHandler.hpp"
-#include "../lib/physics/PhysicsHandler.hpp"
-#include "../factory/gameObject.factory.hpp"
+#include "../lib/CollisionSystem.hpp"
+#include "../lib/PhysicsSystem.hpp"
+#include "../factory/GameObjectFactory.hpp"
 
 using namespace std;
 

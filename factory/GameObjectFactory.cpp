@@ -1,4 +1,4 @@
-#include "gameObject.factory.hpp"
+#include "GameObjectFactory.hpp"
 #include <memory>
 #include <raylib.h>
 #include "../components/transform/GameTransform.hpp"

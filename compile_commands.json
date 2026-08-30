@@ -18,11 +18,11 @@
     "output": "run"
   },
   {
-    "file": "components/rectangle/RectangRenderer.cpp",
+    "file": "components/rectangle/RectangleRenderer.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
-      "components/rectangle/RectangRenderer.cpp",
+      "components/rectangle/RectangleRenderer.cpp",
       "-Icomponents",
       "-Icomponents/circle",
       "-Icomponents/gameObject",
@@ -144,11 +144,11 @@
     "output": "run"
   },
   {
-    "file": "lib/CollisionHandler.cpp",
+    "file": "lib/CollisionSystem.cpp",
     "arguments": [
       "/usr/bin/g++",
       "-std=c++17",
-      "lib/CollisionHandler.cpp",
+      "lib/CollisionSystem.cpp",
       "-Icomponents",
       "-Icomponents/circle",
       "-Icomponents/gameObject",

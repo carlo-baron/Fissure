@@ -1,4 +1,4 @@
-#include "CollisionHandler.hpp"
+#include "CollisionSystem.hpp"
 #include "GameObject.hpp"
 #include "collider/circleCollider/CircleCollider.hpp"
 #include "collider/rectangleCollider/RectangleCollider.hpp"
