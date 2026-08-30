@@ -16,8 +16,8 @@ class ICollider{
 		virtual void SetPosition(Vector2 position) = 0;
 
 		virtual ShapeType GetShapeType() const = 0;
-		virtual void OnCollisionEnter(ICollider* other) const = 0;
-		virtual void OnCollisionExit(ICollider* other) const = 0;
+		virtual void OnCollisionEnter(ICollider* self, ICollider* other) const = 0;
+		virtual void OnCollisionExit(ICollider* self, ICollider* other) const = 0;
 		virtual void AddListener(ICollisionListener* listener) = 0;
 
 		virtual ~ICollider() {};

@@ -43,13 +43,13 @@ void GameObject::Update(){
 	drawable->Draw();
 }
 
-void GameObject::OnCollisionEnter(ICollider* other) const {
+void GameObject::OnCollisionEnter(ICollider* self, ICollider* other) const {
 	if(other){
 		this->drawable->SetColor(RED);
 	}
 }
 
-void GameObject::OnCollisionExit(ICollider* other) const {
+void GameObject::OnCollisionExit(ICollider* self, ICollider* other) const {
 	if(other){
 		this->drawable->SetColor(WHITE);
 	}

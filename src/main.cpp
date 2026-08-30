@@ -18,10 +18,9 @@ int main(){
 		GetScreenHeight() / 2.0f
 	};
 
+	// Factory
 	GameObjectFactory gameObjectFactory;
-	CollisionSystem collisionSystem;
-	PhysicsSystem physicsSystem;
-	
+
 	// Game Objects
 	GameObject dummyCircle = gameObjectFactory.CircleObject({ center.x, 70 }, 50);
 	GameObject mouseObject = gameObjectFactory.CircleObject({0, 0}, 20);
@@ -32,6 +31,11 @@ int main(){
 	gameObjects.push_back(&mouseObject);
 	gameObjects.push_back(&rectangleObject);
 
+	// Systems
+	CollisionSystem collisionSystem(gameObjects);
+	PhysicsSystem physicsSystem(gameObjects);
+	
+	// Variables
 	float speed = 20.0f;
 
 	while(!WindowShouldClose()){
@@ -39,10 +43,10 @@ int main(){
 		mouseObject.GetGameTransform()->SetPosition(mousePos);
 		int fps = GetFPS();
 
-		collisionSystem.CollisionHandler(gameObjects);
-		physicsSystem.PhysicsHandler(gameObjects);
+		collisionSystem.CollisionHandler();
+		physicsSystem.PhysicsHandler();
 
-		rectangleObject.GetRigidbody()->SetVelocity({speed * GetFrameTime(), 0});
+		// rectangleObject.GetRigidbody()->SetVelocity({speed * GetFrameTime(), 0});
 
 		BeginDrawing();
 			ClearBackground(BLACK);
