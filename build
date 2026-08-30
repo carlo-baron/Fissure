@@ -1,14 +1,32 @@
 #!/bin/bash
 
-g++ src/*.cpp \
-    lib/*.cpp \
-    components/circle/*.cpp \
-    components/rectangle/*.cpp \
-    -Icomponents/circle \
-    -Icomponents/rectangle \
-    -o run \
-    -lraylib -lm -lpthread -ldl -lX11
-
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    g++ -std=c++17 $(find src components factory customBehaviours -name "*.cpp") \
+        $(find lib -name "*.cpp" 2>/dev/null) \
+				-IcustomBehaviours \
+        -Ifactory \
+        -Icomponents \
+        -Icomponents/circle \
+        -Icomponents/gameObject \
+        -Icomponents/rectangle \
+        -Icomponents/transform \
+        -I/usr/local/include \
+        -L/usr/local/lib \
+        -o run \
+        -lraylib -lm -lpthread -ldl
+else
+    g++ -std=c++17 $(find src components factory customBehaviours -name "*.cpp") \
+        $(find lib -name "*.cpp" 2>/dev/null) \
+        -Ifactory \
+				-IcustomBehaviours \
+        -Icomponents \
+        -Icomponents/circle \
+        -Icomponents/gameObject \
+        -Icomponents/rectangle \
+        -Icomponents/transform \
+        -o run \
+        -lraylib -lm -lpthread -ldl -lX11
+fi
 if [ $? -eq 0 ]; then
     ./run
 fi

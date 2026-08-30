@@ -1,0 +1,164 @@
+[
+  {
+    "file": "src/main.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "src/main.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "components/rectangle/RectangleRenderer.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "components/rectangle/RectangleRenderer.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "components/rectangle/Rect.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "components/rectangle/Rect.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "components/collider/circleCollider/CircleCollider.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "components/collider/circleCollider/CircleCollider.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "components/circle/CircleRenderer.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "components/circle/CircleRenderer.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "components/circle/Circle.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "components/circle/Circle.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "components/gameObject/GameObject.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "components/gameObject/GameObject.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "components/transform/GameTransform.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "components/transform/GameTransform.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  },
+  {
+    "file": "lib/CollisionSystem.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "lib/CollisionSystem.cpp",
+      "-Icomponents",
+      "-Icomponents/circle",
+      "-Icomponents/gameObject",
+      "-Icomponents/rectangle",
+      "-Icomponents/transform",
+      "-I/usr/local/include",
+      "-o",
+      "run"
+    ],
+    "directory": "/Users/lods/repos/GeometryFPS",
+    "output": "run"
+  }
+]

@@ -1,49 +1,55 @@
 #include "raylib.h"
+#include <string>
 #include <vector>
-#include "../components/circle/Circle.hpp"
-#include "../components/rectangle/Rect.hpp"
-#include "../lib/CollisionHandler.hpp"
+#include "../components/gameObject/GameObject.hpp"
+#include "../lib/CollisionSystem.hpp"
+#include "../lib/PhysicsSystem.hpp"
+#include "../factory/GameObjectFactory.hpp"
 
 using namespace std;
 
 int main(){
-	InitWindow(500, 500, "Collision Detector");
+	InitWindow(500, 500, "GeometryFPS");
 	SetTargetFPS(60);
-
-	vector<Circle*> circles;
-	vector<Rect*> rectangles;
 
 	Vector2 center = {
 		GetScreenWidth() / 2.0f,
 		GetScreenHeight() / 2.0f
 	};
 
-	Circle mouseCircle(10, {0, 0});
-	Circle fallingCircle(50, { center.x, 0}, PINK, {0, 100}, true);
-	Rect rect1(center, 50, 50);
+	// Factory
+	GameObjectFactory gameObjectFactory;
 
-	circles.push_back(&mouseCircle);
-	circles.push_back(&fallingCircle);
+	// Game Objects
+	GameObject dummyCircle = gameObjectFactory.CircleObject({ center.x, 70 }, 50);
+	GameObject rectangleObject = gameObjectFactory.RectangleObject(center, 100, 100);
 
-	rectangles.push_back(&rect1);
+	vector<GameObject*> gameObjects;
+	gameObjects.push_back(&dummyCircle);
+	gameObjects.push_back(&rectangleObject);
+
+	// Systems
+	CollisionSystem collisionSystem(gameObjects);
+	PhysicsSystem physicsSystem(gameObjects);
+	
+	rectangleObject.GetComponent<Rigidbody>()->SetType(RigidbodyType::Kinematic);
 
 	while(!WindowShouldClose()){
-		Vector2 mousePos = GetMousePosition();
-		circles[0]->SetPosition(mousePos);
+		int fps = GetFPS();
 
-		//handle circle collision
-		CollisionHandler(circles, rectangles);
+		collisionSystem.CollisionHandler();
+		physicsSystem.PhysicsHandler();
 
 		BeginDrawing();
 			ClearBackground(BLACK);
 
-			rect1.Draw();
-			for(int i = 0; i < circles.size(); i++){
-				circles[i]->Draw();
-			}
-			for(int i = 0; i < rectangles.size(); i++){
-				rectangles[i]->Draw();
-			}
+			DrawText(to_string(fps).c_str(), 465, 5, 24, GREEN);
+
+			dummyCircle.Draw();
+			rectangleObject.Draw();
+
+			dummyCircle.Update();
+			rectangleObject.Update();
 
 		EndDrawing();
 	}
