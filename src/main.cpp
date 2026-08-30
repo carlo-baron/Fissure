@@ -1,4 +1,6 @@
 #include "raylib.h"
+#include <charconv>
+#include <string>
 #include <vector>
 #include "../components/gameObject/GameObject.hpp"
 #include "../lib/CollisionHandler.hpp"
@@ -18,6 +20,7 @@ int main(){
 
 	GameObjectFactory gameObjectFactory;
 	CollisionSystem collisionSystem;
+	PhysicsSystem physicsSystem;
 	
 	// Game Objects
 	GameObject dummyCircle = gameObjectFactory.CircleObject({ center.x, 70 }, 50);
@@ -29,16 +32,22 @@ int main(){
 	gameObjects.push_back(&mouseObject);
 	gameObjects.push_back(&rectangleObject);
 
+	float speed = 20.0f;
 
 	while(!WindowShouldClose()){
 		Vector2 mousePos = GetMousePosition();
 		mouseObject.GetGameTransform()->SetPosition(mousePos);
+		int fps = GetFPS();
 
 		collisionSystem.CollisionHandler(gameObjects);
-		PhysicsHandler(gameObjects);
+		physicsSystem.PhysicsHandler(gameObjects);
+
+		rectangleObject.GetRigidbody()->SetVelocity({speed * GetFrameTime(), 0});
 
 		BeginDrawing();
 			ClearBackground(BLACK);
+
+			DrawText(to_string(fps).c_str(), 465, 5, 24, GREEN);
 
 			dummyCircle.Update();
 			rectangleObject.Update();

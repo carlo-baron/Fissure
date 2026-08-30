@@ -2,4 +2,9 @@
 #include "../components/gameObject/GameObject.hpp"
 #include <vector>
 
-void PhysicsHandler(vector<GameObject*> gameObject);
+class PhysicsSystem{
+	private:
+
+	public:
+	void PhysicsHandler(vector<GameObject*> gameObject);
+};
