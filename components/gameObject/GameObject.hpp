@@ -33,5 +33,5 @@ class GameObject : public ICollisionListener {
 		void OnCollisionEnter(ICollider* self, ICollider* other) const override;
 		void OnCollisionExit(ICollider* self, ICollider* other) const override;
 
-		void Update();
+		void Draw();
 };

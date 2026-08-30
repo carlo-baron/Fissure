@@ -35,7 +35,7 @@ Rigidbody* GameObject::GetRigidbody(){
 	return rigidbody.get();
 }
 
-void GameObject::Update(){
+void GameObject::Draw(){
 	if(collider){
 		collider->GetDrawable()->Draw();
 	}

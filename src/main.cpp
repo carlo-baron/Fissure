@@ -36,7 +36,7 @@ int main(){
 	PhysicsSystem physicsSystem(gameObjects);
 	
 	// Variables
-	float speed = 20.0f;
+	float speed = 30.0f;
 	auto recRb = rectangleObject.GetRigidbody();
 	auto dummyRb = dummyCircle.GetRigidbody();
 
@@ -48,7 +48,6 @@ int main(){
 		collisionSystem.CollisionHandler();
 		physicsSystem.PhysicsHandler();
 
-		// rectangleObject.GetRigidbody()->SetVelocity({speed * GetFrameTime(), 0});
 		if(recRb){
 			rectangleObject.GetRigidbody()->SetGravity(0);
 		}
@@ -62,9 +61,9 @@ int main(){
 
 			DrawText(to_string(fps).c_str(), 465, 5, 24, GREEN);
 
-			dummyCircle.Update();
-			rectangleObject.Update();
-			mouseObject.Update();
+			dummyCircle.Draw();
+			rectangleObject.Draw();
+			mouseObject.Draw();
 
 		EndDrawing();
 	}
