@@ -48,6 +48,9 @@ int main(){
 			dummyCircle.Draw();
 			rectangleObject.Draw();
 
+			dummyCircle.Update();
+			rectangleObject.Update();
+
 		EndDrawing();
 	}
 

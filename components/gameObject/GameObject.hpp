@@ -5,7 +5,6 @@
 #include "../collider/ICollider.hpp"
 #include "../physics/Rigidbody.hpp"
 #include "../ICustomBehaviour.hpp"
-
 using namespace std;
 
 class GameObject{
@@ -15,7 +14,6 @@ class GameObject{
 		unique_ptr<ICollider> collider;
 		unique_ptr<Rigidbody> rigidbody;
 		unique_ptr<ICustomBehaviour> customBehaviour;
-
 	public:
 		GameObject(
 			unique_ptr<IGameTransform> transform,
@@ -25,13 +23,40 @@ class GameObject{
 			unique_ptr<ICustomBehaviour> customBehaviour = nullptr
 		);
 
-		IGameTransform* GetGameTransform();
-
-		IDrawable* GetDrawable();
-
-		ICollider* GetCollider();
-
-		Rigidbody* GetRigidbody();
-
 		void Draw();
+		void Update();
+
+		template<typename T>
+		T* GetComponent();
 };
+
+
+template<typename T>
+T* GameObject::GetComponent() {
+	return nullptr;
+}
+
+template<>
+inline IGameTransform* GameObject::GetComponent<IGameTransform>() {
+	return transform.get();
+}
+
+template<>
+inline IDrawable* GameObject::GetComponent<IDrawable>() {
+	return drawable.get();
+}
+
+template<>
+inline ICollider* GameObject::GetComponent<ICollider>() {
+	return collider.get();
+}
+
+template<>
+inline Rigidbody* GameObject::GetComponent<Rigidbody>() {
+	return rigidbody.get();
+}
+
+template<>
+inline ICustomBehaviour* GameObject::GetComponent<ICustomBehaviour>() {
+	return customBehaviour.get();
+}

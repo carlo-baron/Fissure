@@ -6,10 +6,10 @@ PhysicsSystem::PhysicsSystem(vector<GameObject *> gameObjects){
 	this->gameObjects = gameObjects;
 
 	for(GameObject* gameObject : gameObjects){
-		ICollider* collider = gameObject->GetCollider();
+		ICollider* collider = gameObject->GetComponent<ICollider>();
 		if(collider){
 			collider->AddListener(this);
-			Rigidbody* rb = gameObject->GetRigidbody();
+			Rigidbody* rb = gameObject->GetComponent<Rigidbody>();
 			if(rb){
 				this->collRbMap.insert({collider, rb});
 			}
@@ -20,11 +20,11 @@ PhysicsSystem::PhysicsSystem(vector<GameObject *> gameObjects){
 void PhysicsSystem::PhysicsHandler(){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		GameObject* object = gameObjects[i];
-		Rigidbody* rb = object->GetRigidbody();
+		Rigidbody* rb = object->GetComponent<Rigidbody>();
 
 		if(!rb || rb->GetType() == RigidbodyType::Static) continue;
 
-		IGameTransform* transform = object->GetGameTransform();
+		IGameTransform* transform = object->GetComponent<IGameTransform>();
 
 		if(rb->GetGravity() > 0){
 			rb->SetVelocity({ rb->GetVelocity().x, this->gravityAcceleration * rb->GetGravity() * GetFrameTime()});

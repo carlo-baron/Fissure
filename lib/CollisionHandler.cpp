@@ -17,8 +17,8 @@ CollisionSystem::CollisionSystem(vector<GameObject*> gameObjects){
 void CollisionSystem::CollisionHandler(){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		for(int j = i + 1; j < (int)gameObjects.size(); j++){
-			ICollider* colliderA = gameObjects[i]->GetCollider();
-			ICollider* colliderB = gameObjects[j]->GetCollider();
+			ICollider* colliderA = gameObjects[i]->GetComponent<ICollider>();
+			ICollider* colliderB = gameObjects[j]->GetComponent<ICollider>();
 			if(!colliderA || !colliderB) continue;
 
 			ShapeType shapeA = colliderA->GetShapeType();

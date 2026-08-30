@@ -1,3 +1,4 @@
+// GameObject.cpp
 #include "GameObject.hpp"
 #include "IDrawable.hpp"
 #include <raylib.h>
@@ -15,31 +16,20 @@ GameObject::GameObject(
 	this->collider = std::move(collider);
 	this->rigidbody = std::move(rigidbody);
 	this->customBehaviour = std::move(customBehaviour);
-}
 
-IGameTransform* GameObject::GetGameTransform(){
-	return transform.get();
-}
-
-IDrawable* GameObject::GetDrawable(){
-	return drawable.get();
-}
-
-ICollider* GameObject::GetCollider(){
-	return collider.get();
-}
-
-Rigidbody* GameObject::GetRigidbody(){
-	return rigidbody.get();
+	if(this->customBehaviour){
+		this->customBehaviour->Start(this);
+	}
 }
 
 void GameObject::Draw(){
 	drawable->Draw();
-
 	if(collider){
 		collider->GetDrawable()->Draw();
 	}
+}
 
+void GameObject::Update(){
 	if(customBehaviour){
 		customBehaviour->Update();
 	}
