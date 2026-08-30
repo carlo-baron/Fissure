@@ -9,7 +9,7 @@
 using namespace std;
 
 int main(){
-	InitWindow(500, 500, "GeometryFPS");
+	InitWindow(500, 500, "Fissure");
 	SetTargetFPS(60);
 
 	Vector2 center = {
