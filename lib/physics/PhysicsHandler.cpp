@@ -22,7 +22,7 @@ void PhysicsSystem::PhysicsHandler(){
 		GameObject* object = gameObjects[i];
 		Rigidbody* rb = object->GetComponent<Rigidbody>();
 
-		if(!rb || rb->GetType() == RigidbodyType::Static) continue;
+		if(!rb || rb->GetType() == RigidbodyType::Static || rb->GetType() == RigidbodyType::Kinematic) continue;
 
 		IGameTransform* transform = object->GetComponent<IGameTransform>();
 
@@ -48,8 +48,13 @@ void PhysicsSystem::OnCollisionEnter(ICollider* self, ICollider* other) const {
 	float finalVelocityX = ResolveInelasticCollision(rbA->GetMass(), rbA->GetVelocity().x, rbB->GetMass(), rbB->GetVelocity().x);
 	float finalVelocityY = ResolveInelasticCollision(rbA->GetMass(), rbA->GetVelocity().y, rbB->GetMass(), rbB->GetVelocity().y);
 
-	rbA->SetVelocity({finalVelocityX, finalVelocityY});
-	rbB->SetVelocity({finalVelocityX, finalVelocityY});
+	if(rbA->GetType() == RigidbodyType::Dynamic){
+		rbA->SetVelocity({finalVelocityX, finalVelocityY});
+	}
+
+	if(rbB->GetType() == RigidbodyType::Dynamic){
+		rbB->SetVelocity({finalVelocityX, finalVelocityY});
+	}
 }
 
 void PhysicsSystem::OnCollisionExit(ICollider* self, ICollider* other) const {

@@ -7,7 +7,6 @@
 #include "../components/circle/CircleRenderer.hpp"
 #include "../components/gameObject/GameObject.hpp"
 #include "../components/rectangle/RectangleRenderer.hpp"
-#include "../customBehaviours/rectangle/RectangleBehaviour.hpp"
 
 using namespace std;
 
@@ -44,14 +43,11 @@ GameObject GameObjectFactory::RectangleObject(Vector2 position, float width, flo
 
 	unique_ptr<Rigidbody> rb = make_unique<Rigidbody>();
 
-	unique_ptr<RectangleBehaviour> custom = make_unique<RectangleBehaviour>();
-
 	GameObject rectangleObject(
 			std::move(transform),
 			std::move(rectangleRenderer),
 			std::move(rectangleCollider),
-			std::move(rb),
-			std::move(custom)
+			std::move(rb)
 		);
 
 	return rectangleObject;
