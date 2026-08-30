@@ -1,4 +1,4 @@
-# GeometryFPS
+# Fissure
 
 A small 2D physics / collision learning project built with [raylib](https://www.raylib.com/) in C++17.
 It is structured around a component-based architecture: a `GameObject` composes a transform, a
