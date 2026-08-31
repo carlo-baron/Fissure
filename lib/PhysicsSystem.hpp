@@ -19,7 +19,7 @@ class PhysicsSystem : public ICollisionSystemListener{
 	private:
 		vector<GameObject*> gameObjects;
 		unordered_map<ICollider*, Rigidbody*> collRbMap;
-		float gravityAcceleration = 150;
+		float gravityAcceleration = 5;
 		CollisionSystem* collisionSystem;
 
 		/**
