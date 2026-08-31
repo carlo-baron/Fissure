@@ -17,13 +17,13 @@ class ICollisionListener{
 		 * @param self The collider that fired the event — the one this listener was added to.
 		 * @param other The collider it collided with.
 		 */
-		virtual void OnCollisionEnter(ICollider* self, ICollider* other) const = 0;
+		virtual void OnCollisionEnter(ICollider* other) const = 0;
 		/**
 		 * @brief Called when the collider this listener is registered on stops colliding with another.
 		 * @param self The collider that fired the event — the one this listener was added to.
 		 * @param other The collider it collided with.
 		 */
-		virtual void OnCollisionExit(ICollider* self, ICollider* other) const = 0;
+		virtual void OnCollisionExit(ICollider* other) const = 0;
 
 		virtual ~ICollisionListener(){};
 };

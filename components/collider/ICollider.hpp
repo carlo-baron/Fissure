@@ -70,7 +70,7 @@ class ICollider{
 		 * @param self This collider, i.e. the one the listener was registered on.
 		 * @param other The collider that collided with self.
 		 */
-		virtual void OnCollisionEnter(ICollider* self, ICollider* other) const = 0;
+		virtual void OnCollisionEnter(ICollider* other) const = 0;
 		/**
 		 * @brief Notifies all registered listeners that a collision with other has ended.
 		 *
@@ -80,7 +80,7 @@ class ICollider{
 		 * @param self This collider, i.e. the one the listener was registered on.
 		 * @param other The collider that collided with self.
 		 */
-		virtual void OnCollisionExit(ICollider* self, ICollider* other) const = 0;
+		virtual void OnCollisionExit(ICollider* other) const = 0;
 		/**
 		 * @brief Registers a listener to be notified on collision enter/exit.
 		 * @param listener The listener to notify. Non-owning.

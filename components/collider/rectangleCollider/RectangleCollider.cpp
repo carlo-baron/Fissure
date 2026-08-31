@@ -35,15 +35,15 @@ void RectangleCollider::SetPosition(Vector2 position){ this->transform->SetPosit
 float RectangleCollider::GetWidth() { return this->width; }
 float RectangleCollider::GetHeight() { return this->height; }
 
-void RectangleCollider::OnCollisionEnter(ICollider* self, ICollider* other) const {
+void RectangleCollider::OnCollisionEnter(ICollider* other) const {
 	for(ICollisionListener* listener : this->listeners){
-		listener->OnCollisionEnter(self, other);
+		listener->OnCollisionEnter(other);
 	}
 }
 
-void RectangleCollider::OnCollisionExit(ICollider* self, ICollider* other) const {
+void RectangleCollider::OnCollisionExit(ICollider* other) const {
 	for(ICollisionListener* listener : this->listeners){
-		listener->OnCollisionExit(self, other);
+		listener->OnCollisionExit(other);
 	}
 }
 
