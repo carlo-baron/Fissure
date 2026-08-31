@@ -2,6 +2,7 @@
 #include "../components/gameObject/GameObject.hpp"
 #include "../components/collider/circleCollider/CircleCollider.hpp"
 #include "../components/collider/rectangleCollider/RectangleCollider.hpp"
+#include "ICollisionSystemListener.hpp"
 #include <optional>
 #include <set>
 #include <utility>
@@ -25,6 +26,7 @@ using namespace std;
  */
 class CollisionSystem{
 	private:
+		vector<ICollisionSystemListener*> listeners;
 		vector<GameObject*> gameObjects;
 		set<pair<ICollider*, ICollider*>> activeCollisions;
 		/**
@@ -39,20 +41,18 @@ class CollisionSystem{
 		/**
 		 * @brief Applies one pair's collision result: MTV correction plus enter/exit events.
 		 *
-		 * On overlap: adds the MTV to the mover's position (only one side
-		 * of the pair is ever moved), records the pair in activeCollisions
-		 * and fires OnCollisionEnter on both colliders — every frame the
-		 * overlap persists. On separation: fires OnCollisionExit on both,
+		 * On overlap: Notifies its listeners about the collision, then record
+		 * the pair in activeCollisions and fires OnCollisionEnter on both colliders —
+		 * every frame the overlap persists. On separation: fires OnCollisionExit on both,
 		 * but only if the pair was recorded as colliding. The set's erase
 		 * returns nonzero only the first time, so exit fires exactly once
 		 * per contact, and never for pairs that never collided.
 		 *
-		 * @param mover The collider whose position receives the MTV.
 		 * @param colliderA One collider of the pair (also the first to get events).
 		 * @param colliderB The other collider of the pair.
 		 * @param mtv The separation vector from the resolver, or nullopt when not overlapping.
 		 */
-		void ResolveCollision(ICollider* mover, ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv);
+		void ResolveCollision(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv);
 
 	public:
 		/**
@@ -118,4 +118,7 @@ class CollisionSystem{
 		 */
 		optional<Vector2> RectangleRectangleCollision(RectangleCollider* rectA, RectangleCollider* rectB);
 
+		void AddListener(ICollisionSystemListener* listener);
+		void NotifyListenersEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv);
+		void NotifyListenersExit(ICollider* colliderA, ICollider* colliderB);
 };

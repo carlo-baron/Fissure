@@ -30,10 +30,8 @@ int main(){
 
 	// Systems
 	CollisionSystem collisionSystem(gameObjects);
-	PhysicsSystem physicsSystem(gameObjects);
+	PhysicsSystem physicsSystem(gameObjects, &collisionSystem);
 	
-	rectangleObject.GetComponent<Rigidbody>()->SetType(RigidbodyType::Kinematic);
-
 	while(!WindowShouldClose()){
 		int fps = GetFPS();
 
