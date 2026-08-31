@@ -1,5 +1,6 @@
 #include "CollisionSystem.hpp"
 #include "GameObject.hpp"
+#include "ICollisionSystemListener.hpp"
 #include "collider/circleCollider/CircleCollider.hpp"
 #include "collider/rectangleCollider/RectangleCollider.hpp"
 #include "raymath.h"
@@ -28,41 +29,26 @@ void CollisionSystem::CollisionHandler(){
 				CircleCollider* circleA = dynamic_cast<CircleCollider*>(colliderA);
 				CircleCollider* circleB = dynamic_cast<CircleCollider*>(colliderB);
 				auto mtv = CircleCircleCollision(circleA, circleB);
-				ResolveCollision(circleB, circleA, circleB, mtv);
+				ResolveCollision(circleA, circleB, mtv);
 
 			}else if(shapeA == ShapeType::Circle && shapeB == ShapeType::Rectangle){
 				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderA);
 				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderB);
 				auto mtv = CircleRectangleCollision(circle, rect);
-				ResolveCollision(circle, circle, rect, mtv);
+				ResolveCollision(circle, rect, mtv);
 
 			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Circle){
 				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderA);
 				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderB);
 				auto mtv = CircleRectangleCollision(circle, rect);
-				ResolveCollision(rect, rect, circle, mtv);
+				ResolveCollision(rect, circle, mtv);
 
 			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Rectangle){
 				RectangleCollider* rectA = dynamic_cast<RectangleCollider*>(colliderA);
 				RectangleCollider* rectB = dynamic_cast<RectangleCollider*>(colliderB);
 				auto mtv = RectangleRectangleCollision(rectA, rectB);
-				ResolveCollision(rectA, rectA, rectB, mtv);
+				ResolveCollision(rectA, rectB, mtv);
 			}
-		}
-	}
-}
-
-void CollisionSystem::ResolveCollision(ICollider* mover, ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv){
-	if(mtv){
-		mover->SetPosition(Vector2Add(mover->GetPosition(), *mtv));
-
-		AddActiveColliders(colliderA, colliderB);
-		colliderA->OnCollisionEnter(colliderA, colliderB);
-		colliderB->OnCollisionEnter(colliderB, colliderA);
-	}else{
-		if(RemoveActiveColliders(colliderA, colliderB) != 0){
-			colliderA->OnCollisionExit(colliderA, colliderB);
-			colliderB->OnCollisionExit(colliderB, colliderA);
 		}
 	}
 }
@@ -119,12 +105,6 @@ optional<Vector2> CollisionSystem::CircleRectangleCollision(CircleCollider* circ
 
 	if(distance > circle->GetRadius()) return nullopt;
 
-	// distance == 0 means the circle's center sits exactly on the closest
-	// point of the rectangle (i.e. the center is inside the rect or on
-	// its boundary), so the displacement vector has no direction to
-	// normalize. Fall back to pushing the circle out through the nearest
-	// rectangle side instead: penetration = radius + distance from the
-	// center to that side.
 	if(distance == 0){
 		float left = circle->GetPosition().x - rect->GetPosition().x;
 		float right = (rect->GetPosition().x + rect->GetWidth()) - circle->GetPosition().x;
@@ -173,3 +153,31 @@ optional<Vector2> CollisionSystem::CircleCircleCollision(CircleCollider* circleA
 
 	return nullopt;
 }
+
+void CollisionSystem::ResolveCollision(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv){
+	if(mtv){
+		AddActiveColliders(colliderA, colliderB);
+		NotifyListenersEnter(colliderA, colliderB, *mtv);
+	}else{
+		if(RemoveActiveColliders(colliderA, colliderB) != 0){
+			NotifyListenersExit(colliderA, colliderB);
+		}
+	}
+}
+
+void CollisionSystem::AddListener(ICollisionSystemListener* listener){
+	this->listeners.push_back(listener);
+}
+
+void CollisionSystem::NotifyListenersEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv){
+	for(ICollisionSystemListener* listener: listeners){
+		listener->OnCollisionSystemEnter(colliderA, colliderB, mtv);
+	}
+}
+
+void CollisionSystem::NotifyListenersExit(ICollider* colliderA, ICollider* colliderB){
+	for(ICollisionSystemListener* listener: listeners){
+		listener->OnCollisionSystemExit(colliderA, colliderB);
+	}
+}
+

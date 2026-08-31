@@ -15,10 +15,10 @@ void RectangleBehaviour::Update(){
 
 }
 
-void RectangleBehaviour::OnCollisionEnter(ICollider* self, ICollider* other) const {
+void RectangleBehaviour::OnCollisionEnter(ICollider* other) const {
 	this->gameObject->GetComponent<IDrawable>()->SetColor(RED);
 }
 
-void RectangleBehaviour::OnCollisionExit(ICollider* self, ICollider* other) const {
+void RectangleBehaviour::OnCollisionExit(ICollider* other) const {
 	this->gameObject->GetComponent<IDrawable>()->SetColor(WHITE);
 }

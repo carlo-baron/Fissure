@@ -37,11 +37,11 @@ class RectangleBehaviour : public ICustomBehaviour, public ICollisionListener{
 		 * @param self The owner's collider that fired the event.
 		 * @param other The collider it collided with.
 		 */
-		void OnCollisionEnter(ICollider* self, ICollider* other) const override;
+		void OnCollisionEnter(ICollider* other) const override;
 		/**
 		 * @brief Collision reaction: sets the owner's drawable color back to WHITE.
 		 * @param self The owner's collider that fired the event.
 		 * @param other The collider it collided with.
 		 */
-		void OnCollisionExit(ICollider* self, ICollider* other) const override;
+		void OnCollisionExit(ICollider* other) const override;
 };

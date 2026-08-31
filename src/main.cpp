@@ -1,3 +1,6 @@
+#include "CircleRenderer.hpp"
+#include "GameTransform.hpp"
+#include "RectangleRenderer.hpp"
 #include "raylib.h"
 #include <string>
 #include <vector>
@@ -21,19 +24,53 @@ int main(){
 	GameObjectFactory gameObjectFactory;
 
 	// Game Objects
-	GameObject dummyCircle = gameObjectFactory.CircleObject({ center.x, 70 }, 50);
-	GameObject rectangleObject = gameObjectFactory.RectangleObject(center, 100, 100);
+	unique_ptr<GameTransform> transform =
+		make_unique<GameTransform>(Vector2{25, center.y});
+	unique_ptr<CircleRenderer> circleRenderer =
+		make_unique<CircleRenderer>(transform.get(), 50);
+	unique_ptr<CircleCollider> circleCollider =
+		make_unique<CircleCollider>(transform.get(), 50);
+	unique_ptr<Rigidbody> rb = make_unique<Rigidbody>();
+	rb->SetGravity(0);
+	rb->SetVelocity(Vector2{1});
+	rb->SetMass(50);
+
+	GameObject circleObject(
+			std::move(transform),
+			std::move(circleRenderer),
+			std::move(circleCollider),
+			std::move(rb)
+		);
+
+
+	unique_ptr<GameTransform> transform1 =
+		make_unique<GameTransform>(Vector2{(float)GetScreenWidth() - 50, center.y});
+
+	unique_ptr<RectangleRenderer> rectangleRenderer =
+		make_unique<RectangleRenderer>(transform1.get(), 50, 50);
+
+	unique_ptr<RectangleCollider> rectangleCollider =
+		make_unique<RectangleCollider>(transform1.get(), 50, 50);
+
+	unique_ptr<Rigidbody> rbRect = make_unique<Rigidbody>();
+	rbRect->SetGravity(0);
+	rbRect->SetVelocity(Vector2{-1, 0});
+
+	GameObject rectangleObject(
+			std::move(transform1),
+			std::move(rectangleRenderer),
+			std::move(rectangleCollider),
+			std::move(rbRect)
+		);
 
 	vector<GameObject*> gameObjects;
-	gameObjects.push_back(&dummyCircle);
+	gameObjects.push_back(&circleObject);
 	gameObjects.push_back(&rectangleObject);
 
 	// Systems
 	CollisionSystem collisionSystem(gameObjects);
-	PhysicsSystem physicsSystem(gameObjects);
+	PhysicsSystem physicsSystem(gameObjects, &collisionSystem);
 	
-	rectangleObject.GetComponent<Rigidbody>()->SetType(RigidbodyType::Kinematic);
-
 	while(!WindowShouldClose()){
 		int fps = GetFPS();
 
@@ -45,10 +82,10 @@ int main(){
 
 			DrawText(to_string(fps).c_str(), 465, 5, 24, GREEN);
 
-			dummyCircle.Draw();
+			circleObject.Draw();
 			rectangleObject.Draw();
 
-			dummyCircle.Update();
+			circleObject.Update();
 			rectangleObject.Update();
 
 		EndDrawing();

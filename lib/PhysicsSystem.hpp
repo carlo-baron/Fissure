@@ -1,5 +1,7 @@
 #pragma once
 #include "../components/gameObject/GameObject.hpp"
+#include "CollisionSystem.hpp"
+#include "ICollisionSystemListener.hpp"
 #include <unordered_map>
 #include <vector>
 
@@ -13,11 +15,12 @@
  * momentum resolution. Integration is a separate per-frame pass in
  * PhysicsHandler().
  */
-class PhysicsSystem : public ICollisionListener{
+class PhysicsSystem : public ICollisionSystemListener{
 	private:
 		vector<GameObject*> gameObjects;
 		unordered_map<ICollider*, Rigidbody*> collRbMap;
-		float gravityAcceleration = 150;
+		float gravityAcceleration = 5;
+		CollisionSystem* collisionSystem;
 
 		/**
 		 * @brief Final velocity of a perfectly inelastic collision along one axis.
@@ -42,7 +45,7 @@ class PhysicsSystem : public ICollisionListener{
 		 * simply produce no momentum change.
 		 * @param gameObject The objects to simulate. Non-owning.
 		 */
-		PhysicsSystem(vector<GameObject*> gameObject);
+		PhysicsSystem(vector<GameObject*> gameObject, CollisionSystem* collisionSystem);
 
 		/**
 		 * @brief Advances the simulation by one frame.
@@ -56,22 +59,6 @@ class PhysicsSystem : public ICollisionListener{
 		 */
 		void PhysicsHandler();
 
-		/**
-		 * @brief Resolves the momentum exchange of a collision (called through the listener interface).
-		 *
-		 * Per axis, computes the shared post-collision velocity of a
-		 * perfectly inelastic collision — (m1*v1 + m2*v2) / (m1 + m2),
-		 * conserving momentum while equalizing both velocities — and
-		 * applies it to whichever of the two bodies are Dynamic.
-		 * Static/Kinematic bodies keep their velocity, so they act as
-		 * immovable for the exchange.
-		 *
-		 * @param self The collider of the first body involved.
-		 * @param other The collider of the second body involved.
-		 */
-		void OnCollisionEnter(ICollider* self, ICollider* other) const override;
-		/**
-		 * @brief No-op: momentum is exchanged on enter, so collision exit needs no physics handling.
-		 */
-		void OnCollisionExit(ICollider* self, ICollider* other) const override;
+		void OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) const override;
+		void OnCollisionSystemExit(ICollider* colliderA, ICollider* colliderB) const override;
 };
