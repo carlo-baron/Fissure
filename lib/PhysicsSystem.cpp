@@ -43,15 +43,12 @@ void PhysicsSystem::PhysicsHandler(){
 	}
 }
 
-// why is physics hard, i should've listened to my teacher
 void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) {
 	colliderA->OnCollisionEnter(colliderB);
 	colliderB->OnCollisionEnter(colliderA);
 
 	auto itA = collRbMap.find(colliderA);
 	auto itB = collRbMap.find(colliderB);
-
-	// checks if these colliders has rigidbody
 	bool hasA = itA != collRbMap.end() && itA->second != nullptr;
 	bool hasB = itB != collRbMap.end() && itB->second != nullptr;
 	if(!hasA && !hasB) return;
@@ -60,12 +57,18 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 	Rigidbody* rbB = hasB ? itB->second : nullptr;
 	RigidbodyType typeA = hasA ? rbA->GetType() : RigidbodyType::Static;
 	RigidbodyType typeB = hasB ? rbB->GetType() : RigidbodyType::Static;
-
-	// only dynamic rb's can be moved hence the name 
 	bool movableA = hasA && typeA == RigidbodyType::Dynamic;
 	bool movableB = hasB && typeB == RigidbodyType::Dynamic;
 
-	// normal force thing
+	CancelPenetratingVelocity(colliderA, colliderB, rbA, rbB, mtv, movableA, movableB);
+	CorrectOverlap(colliderA, colliderB, mtv, movableA, movableB);
+
+	if(!hasA || !hasB) return;
+
+	ResolveMomentum(rbA, rbB, typeA, typeB);
+}
+
+void PhysicsSystem::CancelPenetratingVelocity(ICollider* colliderA, ICollider* colliderB, Rigidbody* rbA, Rigidbody* rbB, Vector2 mtv, bool movableA, bool movableB){
 	if(movableA && !movableB){
 		if(Vector2LengthSqr(mtv) > 0){
 			Vector2 normal = Vector2Normalize(mtv);
@@ -73,7 +76,7 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 			if(into > 0){
 				rbA->SetVelocity(Vector2Subtract(rbA->GetVelocity(), Vector2Scale(normal, into)));
 			}
-	}
+		}
 	}else if(movableB && !movableA){
 		Vector2 negSeparation = Vector2Negate(mtv);
 		if(Vector2LengthSqr(negSeparation) > 0){
@@ -84,8 +87,9 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 			}
 		}
 	}
+}
 
-	// position correction mtv
+void PhysicsSystem::CorrectOverlap(ICollider* colliderA, ICollider* colliderB, Vector2 mtv, bool movableA, bool movableB){
 	if(movableA && movableB){
 		Vector2 half = Vector2Scale(mtv, 0.5f);
 		colliderA->SetPosition(Vector2Subtract(colliderA->GetPosition(), half));
@@ -95,10 +99,9 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 	}else if(movableB){
 		colliderB->SetPosition(Vector2Add(colliderB->GetPosition(), mtv));
 	}
+}
 
-	if(!hasA || !hasB) return;
-
-	// conservation of momentum
+void PhysicsSystem::ResolveMomentum(Rigidbody* rbA, Rigidbody* rbB, RigidbodyType typeA, RigidbodyType typeB){
 	Vector2 velocity1, velocity2;
 	tie(velocity1, velocity2) = ResolveCollision(rbA, rbB);
 

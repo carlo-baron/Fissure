@@ -23,6 +23,9 @@ class PhysicsSystem : public ICollisionSystemListener{
 		CollisionSystem* collisionSystem;
 
 		tuple<Vector2, Vector2> ResolveCollision(Rigidbody* rb1, Rigidbody* rb2);
+		void CancelPenetratingVelocity(ICollider* colliderA, ICollider* colliderB, Rigidbody* rbA, Rigidbody* rbB, Vector2 mtv, bool movableA, bool movableB);
+		void CorrectOverlap(ICollider* colliderA, ICollider* colliderB, Vector2 mtv, bool movableA, bool movableB);
+		void ResolveMomentum(Rigidbody* rbA, Rigidbody* rbB, RigidbodyType typeA, RigidbodyType typeB);
 
 	public:
 		/**
