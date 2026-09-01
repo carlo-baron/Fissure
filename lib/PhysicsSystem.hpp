@@ -22,19 +22,10 @@ class PhysicsSystem : public ICollisionSystemListener{
 		float gravityAcceleration = 5;
 		CollisionSystem* collisionSystem;
 
-		/**
-		 * @brief Final velocity of a perfectly inelastic collision along one axis.
-		 *
-		 * Momentum is conserved — m1*v1 + m2*v2 — while both bodies end
-		 * up moving together at the same velocity, hence the division by
-		 * the total mass.
-		 * @param mass1 Mass of the first body.
-		 * @param velocity1 Velocity of the first body along this axis.
-		 * @param mass2 Mass of the second body.
-		 * @param velocity2 Velocity of the second body along this axis.
-		 * @return The shared post-collision velocity.
-		 */
-		float ResolveInelasticCollision(float mass1, float velocity1, float mass2, float velocity2) const;
+		tuple<Vector2, Vector2> ResolveCollision(Rigidbody* rb1, Rigidbody* rb2);
+		void CancelPenetratingVelocity(ICollider* colliderA, ICollider* colliderB, Rigidbody* rbA, Rigidbody* rbB, Vector2 mtv, bool movableA, bool movableB);
+		void CorrectOverlap(ICollider* colliderA, ICollider* colliderB, Vector2 mtv, bool movableA, bool movableB);
+		void ResolveMomentum(Rigidbody* rbA, Rigidbody* rbB, RigidbodyType typeA, RigidbodyType typeB);
 
 	public:
 		/**
@@ -59,6 +50,6 @@ class PhysicsSystem : public ICollisionSystemListener{
 		 */
 		void PhysicsHandler();
 
-		void OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) const override;
-		void OnCollisionSystemExit(ICollider* colliderA, ICollider* colliderB) const override;
+		void OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) override;
+		void OnCollisionSystemExit(ICollider* colliderA, ICollider* colliderB) override;
 };

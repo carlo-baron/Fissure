@@ -31,8 +31,9 @@ class CollisionSystem{
 		set<pair<ICollider*, ICollider*>> activeCollisions;
 		/**
 		 * @brief Records a pair as currently colliding.
+		 * @return True or False if the pair is newly inserted.
 		 */
-		void AddActiveColliders(ICollider* colliderA, ICollider* colliderB);
+		bool AddActiveColliders(ICollider* colliderA, ICollider* colliderB);
 		/**
 		 * @brief Removes a pair from the active set.
 		 * @return Number of pairs removed — nonzero means the pair had been colliding.
@@ -52,7 +53,7 @@ class CollisionSystem{
 		 * @param colliderB The other collider of the pair.
 		 * @param mtv The separation vector from the resolver, or nullopt when not overlapping.
 		 */
-		void ResolveCollision(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv);
+		void NotifyListeners(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv);
 
 	public:
 		/**

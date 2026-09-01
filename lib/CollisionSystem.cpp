@@ -29,32 +29,34 @@ void CollisionSystem::CollisionHandler(){
 				CircleCollider* circleA = dynamic_cast<CircleCollider*>(colliderA);
 				CircleCollider* circleB = dynamic_cast<CircleCollider*>(colliderB);
 				auto mtv = CircleCircleCollision(circleA, circleB);
-				ResolveCollision(circleA, circleB, mtv);
+				NotifyListeners(circleA, circleB, mtv);
 
 			}else if(shapeA == ShapeType::Circle && shapeB == ShapeType::Rectangle){
 				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderA);
 				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderB);
 				auto mtv = CircleRectangleCollision(circle, rect);
-				ResolveCollision(circle, rect, mtv);
+				if(mtv) Vector2Negate(*mtv);
+				NotifyListeners(circle, rect, mtv);
 
 			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Circle){
 				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderA);
 				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderB);
 				auto mtv = CircleRectangleCollision(circle, rect);
-				ResolveCollision(rect, circle, mtv);
+				NotifyListeners(rect, circle, mtv);
 
 			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Rectangle){
 				RectangleCollider* rectA = dynamic_cast<RectangleCollider*>(colliderA);
 				RectangleCollider* rectB = dynamic_cast<RectangleCollider*>(colliderB);
 				auto mtv = RectangleRectangleCollision(rectA, rectB);
-				ResolveCollision(rectA, rectB, mtv);
+				if(mtv) Vector2Negate(*mtv);
+				NotifyListeners(rectA, rectB, mtv);
 			}
 		}
 	}
 }
 
-void CollisionSystem::AddActiveColliders(ICollider* colliderA, ICollider* colliderB){
-	this->activeCollisions.insert({colliderA, colliderB});
+bool CollisionSystem::AddActiveColliders(ICollider* colliderA, ICollider* colliderB){
+	return this->activeCollisions.insert({colliderA, colliderB}).second;
 }
 
 int CollisionSystem::RemoveActiveColliders(ICollider* colliderA, ICollider* colliderB){
@@ -154,10 +156,12 @@ optional<Vector2> CollisionSystem::CircleCircleCollision(CircleCollider* circleA
 	return nullopt;
 }
 
-void CollisionSystem::ResolveCollision(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv){
+void CollisionSystem::NotifyListeners(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv){
 	if(mtv){
-		AddActiveColliders(colliderA, colliderB);
-		NotifyListenersEnter(colliderA, colliderB, *mtv);
+		bool isNew = AddActiveColliders(colliderA, colliderB);
+		if(isNew){
+			NotifyListenersEnter(colliderA, colliderB, *mtv);
+		}
 	}else{
 		if(RemoveActiveColliders(colliderA, colliderB) != 0){
 			NotifyListenersExit(colliderA, colliderB);
