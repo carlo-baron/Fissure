@@ -51,5 +51,6 @@ class PhysicsSystem : public ICollisionSystemListener{
 		void PhysicsHandler();
 
 		void OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) override;
+		void OnCollisionSystemStay(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) override;
 		void OnCollisionSystemExit(ICollider* colliderA, ICollider* colliderB) override;
 };

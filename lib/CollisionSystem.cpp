@@ -35,7 +35,7 @@ void CollisionSystem::CollisionHandler(){
 				CircleCollider* circle = dynamic_cast<CircleCollider*>(colliderA);
 				RectangleCollider* rect = dynamic_cast<RectangleCollider*>(colliderB);
 				auto mtv = CircleRectangleCollision(circle, rect);
-				if(mtv) Vector2Negate(*mtv);
+				if(mtv) *mtv = Vector2Negate(*mtv);
 				NotifyListeners(circle, rect, mtv);
 
 			}else if(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Circle){
@@ -48,7 +48,7 @@ void CollisionSystem::CollisionHandler(){
 				RectangleCollider* rectA = dynamic_cast<RectangleCollider*>(colliderA);
 				RectangleCollider* rectB = dynamic_cast<RectangleCollider*>(colliderB);
 				auto mtv = RectangleRectangleCollision(rectA, rectB);
-				if(mtv) Vector2Negate(*mtv);
+				if(mtv) *mtv = Vector2Negate(*mtv);
 				NotifyListeners(rectA, rectB, mtv);
 			}
 		}
@@ -161,6 +161,8 @@ void CollisionSystem::NotifyListeners(ICollider* colliderA, ICollider* colliderB
 		bool isNew = AddActiveColliders(colliderA, colliderB);
 		if(isNew){
 			NotifyListenersEnter(colliderA, colliderB, *mtv);
+		}else{
+			NotifyListenersStay(colliderA, colliderB, *mtv);
 		}
 	}else{
 		if(RemoveActiveColliders(colliderA, colliderB) != 0){
@@ -176,6 +178,12 @@ void CollisionSystem::AddListener(ICollisionSystemListener* listener){
 void CollisionSystem::NotifyListenersEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv){
 	for(ICollisionSystemListener* listener: listeners){
 		listener->OnCollisionSystemEnter(colliderA, colliderB, mtv);
+	}
+}
+
+void CollisionSystem::NotifyListenersStay(ICollider* colliderA, ICollider* colliderB, Vector2 mtv){
+	for(ICollisionSystemListener* listener: listeners){
+		listener->OnCollisionSystemStay(colliderA, colliderB, mtv);
 	}
 }
 

@@ -121,5 +121,6 @@ class CollisionSystem{
 
 		void AddListener(ICollisionSystemListener* listener);
 		void NotifyListenersEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv);
+		void NotifyListenersStay(ICollider* colliderA, ICollider* colliderB, Vector2 mtv);
 		void NotifyListenersExit(ICollider* colliderA, ICollider* colliderB);
 };

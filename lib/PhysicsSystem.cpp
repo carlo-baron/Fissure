@@ -46,7 +46,9 @@ void PhysicsSystem::PhysicsHandler(){
 void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) {
 	colliderA->OnCollisionEnter(colliderB);
 	colliderB->OnCollisionEnter(colliderA);
+}
 
+void PhysicsSystem::OnCollisionSystemStay(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) {
 	auto itA = collRbMap.find(colliderA);
 	auto itB = collRbMap.find(colliderB);
 	bool hasA = itA != collRbMap.end() && itA->second != nullptr;
