@@ -53,8 +53,8 @@ void CollisionSystem::CollisionHandler(){
 	}
 }
 
-void CollisionSystem::AddActiveColliders(ICollider* colliderA, ICollider* colliderB){
-	this->activeCollisions.insert({colliderA, colliderB});
+bool CollisionSystem::AddActiveColliders(ICollider* colliderA, ICollider* colliderB){
+	return this->activeCollisions.insert({colliderA, colliderB}).second;
 }
 
 int CollisionSystem::RemoveActiveColliders(ICollider* colliderA, ICollider* colliderB){
@@ -156,8 +156,10 @@ optional<Vector2> CollisionSystem::CircleCircleCollision(CircleCollider* circleA
 
 void CollisionSystem::ResolveCollision(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv){
 	if(mtv){
-		AddActiveColliders(colliderA, colliderB);
-		NotifyListenersEnter(colliderA, colliderB, *mtv);
+		bool isNew = AddActiveColliders(colliderA, colliderB);
+		if(isNew){
+			NotifyListenersEnter(colliderA, colliderB, *mtv);
+		}
 	}else{
 		if(RemoveActiveColliders(colliderA, colliderB) != 0){
 			NotifyListenersExit(colliderA, colliderB);

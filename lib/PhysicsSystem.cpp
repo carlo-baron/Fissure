@@ -1,7 +1,9 @@
 #include "PhysicsSystem.hpp"
 #include "CollisionSystem.hpp"
+#include <iostream>
 #include <raylib.h>
 #include <raymath.h>
+#include <tuple>
 
 PhysicsSystem::PhysicsSystem(vector<GameObject *> gameObjects, CollisionSystem* collisionSystem){
 	this->gameObjects = gameObjects;
@@ -41,15 +43,9 @@ void PhysicsSystem::PhysicsHandler(){
 	}
 }
 
-float PhysicsSystem::ResolveInelasticCollision(float mass1, float velocity1, float mass2, float velocity2) const {
-	float numerator = (mass1 * velocity1) + (mass2 * velocity2);
-	float denominator = mass1 + mass2;
-
-	return numerator / denominator;
-}
-
 // why is physics hard, i should've listened to my teacher
-void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) const {
+void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) {
+	cout << "Called" << endl;
 	colliderA->OnCollisionEnter(colliderB);
 	colliderB->OnCollisionEnter(colliderA);
 
@@ -112,18 +108,49 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 
 	if(!hasA || !hasB) return;
 
-	// conservation of momentum - Perfectly Inelastic collision
-	float finalVelocityX = ResolveInelasticCollision(rbA->GetMass(), rbA->GetVelocity().x, rbB->GetMass(), rbB->GetVelocity().x);
-	float finalVelocityY = ResolveInelasticCollision(rbA->GetMass(), rbA->GetVelocity().y, rbB->GetMass(), rbB->GetVelocity().y);
+	// conservation of momentum
+	Vector2 velocity1, velocity2;
+	tie(velocity1, velocity2) = ResolveCollision(rbA, rbB);
+
+	cout << velocity1.x << ", " << velocity2.x << endl;
+
 	if(typeA == RigidbodyType::Dynamic){
-		rbA->SetVelocity({finalVelocityX, finalVelocityY});
+		rbA->SetVelocity(velocity1);
 	}
 	if(typeB == RigidbodyType::Dynamic){
-		rbB->SetVelocity({finalVelocityX, finalVelocityY});
+		rbB->SetVelocity(velocity2);
 	}
 }
 
-void PhysicsSystem::OnCollisionSystemExit(ICollider* colliderA, ICollider* colliderB) const {
+tuple<Vector2, Vector2> PhysicsSystem::ResolveCollision(Rigidbody* rb1, Rigidbody* rb2){
+	float e = 0; // TODO: bounciness - add to rb and average out 
+
+	float v1fX =
+		(rb1->GetMass() * rb1->GetVelocity().x
+		 + rb2->GetMass() * rb2->GetVelocity().x
+		 - rb2->GetMass() * e * (rb1->GetVelocity().x - rb2->GetVelocity().x))
+		/ (rb1->GetMass() + rb2->GetMass());
+	float v1fY =
+		(rb1->GetMass() * rb1->GetVelocity().y
+		 + rb2->GetMass() * rb2->GetVelocity().y
+		 - rb2->GetMass() * e * (rb1->GetVelocity().y - rb2->GetVelocity().y))
+		/ (rb1->GetMass() + rb2->GetMass());
+
+	float v2fX = 
+		(rb1->GetMass() * rb1->GetVelocity().x 
+		 + rb2->GetMass() * rb2->GetVelocity().x 
+		 + rb1->GetMass() * e * (rb1->GetVelocity().x - rb2->GetVelocity().x))
+		/ (rb1->GetMass() + rb2->GetMass());
+	float v2fY = 
+		(rb1->GetMass() * rb1->GetVelocity().y 
+		 + rb2->GetMass() * rb2->GetVelocity().y 
+		 + rb1->GetMass() * e * (rb1->GetVelocity().y - rb2->GetVelocity().y))
+		/ (rb1->GetMass() + rb2->GetMass());
+
+	return {Vector2{v1fX, v1fY}, Vector2{v2fX, v2fY}};
+}
+
+void PhysicsSystem::OnCollisionSystemExit(ICollider* colliderA, ICollider* colliderB) {
 	colliderA->OnCollisionExit(colliderB);
 	colliderB->OnCollisionExit(colliderA);
 }
