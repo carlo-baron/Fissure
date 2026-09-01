@@ -53,7 +53,7 @@ class CollisionSystem{
 		 * @param colliderB The other collider of the pair.
 		 * @param mtv The separation vector from the resolver, or nullopt when not overlapping.
 		 */
-		void ResolveCollision(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv);
+		void NotifyListeners(ICollider* colliderA, ICollider* colliderB, optional<Vector2> mtv);
 
 	public:
 		/**

@@ -65,26 +65,17 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 	bool movableA = hasA && typeA == RigidbodyType::Dynamic;
 	bool movableB = hasB && typeB == RigidbodyType::Dynamic;
 
-	// temp solution since i have inconsistent mtv 
-	// TODO: fix mtv calculation in collision system to make it always point to collider A
-	ShapeType shapeA = colliderA->GetShapeType();
-	ShapeType shapeB = colliderB->GetShapeType();
-	bool pointsTowardColliderA =
-		(shapeA == ShapeType::Circle && shapeB == ShapeType::Rectangle) ||
-		(shapeA == ShapeType::Rectangle && shapeB == ShapeType::Rectangle);
-	Vector2 separation = pointsTowardColliderA ? Vector2Negate(mtv) : mtv;
-
 	// normal force thing
 	if(movableA && !movableB){
-		if(Vector2LengthSqr(separation) > 0){
-			Vector2 normal = Vector2Normalize(separation);
+		if(Vector2LengthSqr(mtv) > 0){
+			Vector2 normal = Vector2Normalize(mtv);
 			float into = Vector2DotProduct(rbA->GetVelocity(), normal);
 			if(into > 0){
 				rbA->SetVelocity(Vector2Subtract(rbA->GetVelocity(), Vector2Scale(normal, into)));
 			}
 	}
 	}else if(movableB && !movableA){
-		Vector2 negSeparation = Vector2Negate(separation);
+		Vector2 negSeparation = Vector2Negate(mtv);
 		if(Vector2LengthSqr(negSeparation) > 0){
 			Vector2 normal = Vector2Normalize(negSeparation);
 			float into = Vector2DotProduct(rbB->GetVelocity(), normal);
@@ -96,13 +87,13 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 
 	// position correction mtv
 	if(movableA && movableB){
-		Vector2 half = Vector2Scale(separation, 0.5f);
+		Vector2 half = Vector2Scale(mtv, 0.5f);
 		colliderA->SetPosition(Vector2Subtract(colliderA->GetPosition(), half));
 		colliderB->SetPosition(Vector2Add(colliderB->GetPosition(), half));
 	}else if(movableA){
-		colliderA->SetPosition(Vector2Subtract(colliderA->GetPosition(), separation));
+		colliderA->SetPosition(Vector2Subtract(colliderA->GetPosition(), mtv));
 	}else if(movableB){
-		colliderB->SetPosition(Vector2Add(colliderB->GetPosition(), separation));
+		colliderB->SetPosition(Vector2Add(colliderB->GetPosition(), mtv));
 	}
 
 	if(!hasA || !hasB) return;
