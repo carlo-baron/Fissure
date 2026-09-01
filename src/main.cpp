@@ -33,6 +33,7 @@ int main(){
 	unique_ptr<Rigidbody> rb = make_unique<Rigidbody>();
 	rb->SetGravity(0);
 	rb->SetVelocity(Vector2{1, 0});
+	rb->SetBounciness(1);
 	rb->SetMass(20);
 
 	GameObject circleObject(

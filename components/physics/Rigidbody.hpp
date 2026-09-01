@@ -28,6 +28,7 @@ class Rigidbody{
 		float mass;
 		Vector2 velocity;
 		RigidbodyType type;
+		float bounciness;
 		float gravity;
 
 	public:
@@ -38,7 +39,7 @@ class Rigidbody{
 		 * @param gravity Per-object gravity multiplier (see GetGravity()).
 		 * @param type How the physics simulation treats this body.
 		 */
-		Rigidbody(Vector2 velocity = {0, 0}, float mass = 1, float gravity = 1, RigidbodyType type = RigidbodyType::Dynamic);
+		Rigidbody(Vector2 velocity = {0, 0}, float mass = 1, RigidbodyType type = RigidbodyType::Dynamic, float bounciness = 0, float gravity = 1);
 
 		Vector2 GetVelocity();
 		void SetVelocity(Vector2 velocity);
@@ -48,6 +49,9 @@ class Rigidbody{
 
 		float GetMass();
 		void SetMass(float mass);
+
+		float GetBounciness();
+		void SetBounciness(float bounciness);
 
 		/**
 		 * @brief Per-object gravity multiplier applied by PhysicsSystem.

@@ -45,7 +45,6 @@ void PhysicsSystem::PhysicsHandler(){
 
 // why is physics hard, i should've listened to my teacher
 void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) {
-	cout << "Called" << endl;
 	colliderA->OnCollisionEnter(colliderB);
 	colliderB->OnCollisionEnter(colliderA);
 
@@ -112,8 +111,6 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 	Vector2 velocity1, velocity2;
 	tie(velocity1, velocity2) = ResolveCollision(rbA, rbB);
 
-	cout << velocity1.x << ", " << velocity2.x << endl;
-
 	if(typeA == RigidbodyType::Dynamic){
 		rbA->SetVelocity(velocity1);
 	}
@@ -123,7 +120,7 @@ void PhysicsSystem::OnCollisionSystemEnter(ICollider* colliderA, ICollider* coll
 }
 
 tuple<Vector2, Vector2> PhysicsSystem::ResolveCollision(Rigidbody* rb1, Rigidbody* rb2){
-	float e = 0; // TODO: bounciness - add to rb and average out 
+	float e = (rb1->GetBounciness() + rb2->GetBounciness()) / 2;
 
 	float v1fX =
 		(rb1->GetMass() * rb1->GetVelocity().x

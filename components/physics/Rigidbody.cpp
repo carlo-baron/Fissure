@@ -1,10 +1,12 @@
 #include "Rigidbody.hpp"
+#include <algorithm>
 
-Rigidbody::Rigidbody(Vector2 velocity, float mass, float gravity, RigidbodyType type){
+Rigidbody::Rigidbody(Vector2 velocity, float mass, RigidbodyType type, float bounciness , float gravity){
 	this->velocity = velocity;
 	this->mass = mass;
-	this->gravity = gravity;
 	this->type = type;
+	this->bounciness = bounciness;
+	this->gravity = gravity;
 }
 
 Vector2 Rigidbody::GetVelocity(){
@@ -30,6 +32,14 @@ void Rigidbody::SetMass(float mass){
 
 float Rigidbody::GetGravity(){
 	return this->gravity;
+}
+
+float Rigidbody::GetBounciness(){
+	return this->bounciness;
+}
+
+void Rigidbody::SetBounciness(float bounciness){
+	this->bounciness = std::clamp(bounciness, 0.0f, 1.0f);
 }
 
 void Rigidbody::SetGravity(float gravity){
