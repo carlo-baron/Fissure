@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include "../transform/IGameTransform.hpp"
 #include "../IDrawable.hpp"
 #include "../collider/ICollider.hpp"
@@ -21,7 +22,7 @@ class GameObject{
 		unique_ptr<IDrawable> drawable;
 		unique_ptr<ICollider> collider;
 		unique_ptr<Rigidbody> rigidbody;
-		unique_ptr<ICustomBehaviour> customBehaviour;
+		vector<unique_ptr<ICustomBehaviour>> customBehaviours;
 	public:
 		/**
 		 * @brief Assembles the object from its components, taking exclusive ownership of them.
@@ -43,9 +44,9 @@ class GameObject{
 			unique_ptr<IDrawable> drawable,
 			unique_ptr<ICollider> collider = nullptr,
 			unique_ptr<Rigidbody> rigidbody = nullptr,
-			unique_ptr<ICustomBehaviour> customBehaviour = nullptr
+			vector<unique_ptr<ICustomBehaviour>> customBehaviours = {}
 		);
-
+ 
 		/**
 		 * @brief Renders the drawable, then the collider's debug outline if a collider is present.
 		 */
@@ -70,6 +71,13 @@ class GameObject{
 
 template<typename T>
 T* GameObject::GetComponent() {
+	if constexpr (std::is_base_of_v<ICustomBehaviour, T>) {
+		for(auto& behaviour : customBehaviours) {
+			if(auto* component = dynamic_cast<T*>(behaviour.get()))
+				return component;
+		}
+	}
+
 	return nullptr;
 }
 
@@ -91,9 +99,4 @@ inline ICollider* GameObject::GetComponent<ICollider>() {
 template<>
 inline Rigidbody* GameObject::GetComponent<Rigidbody>() {
 	return rigidbody.get();
-}
-
-template<>
-inline ICustomBehaviour* GameObject::GetComponent<ICustomBehaviour>() {
-	return customBehaviour.get();
 }
