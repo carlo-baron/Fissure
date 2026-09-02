@@ -23,6 +23,9 @@ class GameObject{
 		unique_ptr<ICollider> collider;
 		unique_ptr<Rigidbody> rigidbody;
 		vector<unique_ptr<ICustomBehaviour>> customBehaviours;
+		GameObject* parent = nullptr;
+		vector<unique_ptr<GameObject>> children;
+
 	public:
 		/**
 		 * @brief Assembles the object from its components, taking exclusive ownership of them.
@@ -44,7 +47,9 @@ class GameObject{
 			unique_ptr<IDrawable> drawable,
 			unique_ptr<ICollider> collider = nullptr,
 			unique_ptr<Rigidbody> rigidbody = nullptr,
-			vector<unique_ptr<ICustomBehaviour>> customBehaviours = {}
+			vector<unique_ptr<ICustomBehaviour>> customBehaviours = {},
+			GameObject* parent = nullptr,
+			vector<unique_ptr<GameObject>> children = {}
 		);
  
 		/**
@@ -55,6 +60,13 @@ class GameObject{
 		 * @brief Runs the custom behaviour's per-frame update, if one is present.
 		 */
 		void Update();
+
+		GameObject* GetParent();
+		void SetParent(GameObject* parent);
+
+		vector<GameObject*> GetChildren();
+		void AddChild(unique_ptr<GameObject> child);
+		void RemoveChild(GameObject* child);
 
 		/**
 		 * @brief Returns the requested component, or nullptr if the object doesn't have one.
