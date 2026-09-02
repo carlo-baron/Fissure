@@ -3,12 +3,14 @@
 #include "RectangleRenderer.hpp"
 #include "physics/Rigidbody.hpp"
 #include "raylib.h"
+#include <memory>
 #include <string>
 #include <vector>
 #include "../components/gameObject/GameObject.hpp"
 #include "../lib/CollisionSystem.hpp"
 #include "../lib/PhysicsSystem.hpp"
 #include "../factory/GameObjectFactory.hpp"
+#include "rectangle/RectangleBehaviour.hpp"
 
 using namespace std;
 
@@ -44,7 +46,6 @@ int main(){
 			std::move(rb)
 		);
 
-
 	unique_ptr<GameTransform> transform1 =
 		make_unique<GameTransform>(Vector2{center.x - 50, center.y});
 
@@ -59,11 +60,17 @@ int main(){
 	rbRect->SetGravity(0);
 	rbRect->SetVelocity(Vector2{0, 0});
 
+	unique_ptr<RectangleBehaviour> rectBehaviour = make_unique<RectangleBehaviour>();
+
+	vector<unique_ptr<ICustomBehaviour>> rectangleBehaviours;
+	rectangleBehaviours.push_back(std::move(rectBehaviour));
+
 	GameObject rectangleObject(
 			std::move(transform1),
 			std::move(rectangleRenderer),
 			std::move(rectangleCollider),
-			std::move(rbRect)
+			std::move(rbRect),
+			std::move(rectangleBehaviours)
 		);
 
 	vector<GameObject*> gameObjects;
