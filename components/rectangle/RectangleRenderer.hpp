@@ -1,11 +1,11 @@
 #pragma once
 
+#include "GameTransform.hpp"
 #include "IDrawable.hpp"
-#include "../transform/IGameTransform.hpp"
 
 class RectangleRenderer : public IDrawable{
 	private:
-		IGameTransform* transform;
+		GameTransform* transform;
 		float width;
 		float height;
 		Color color;
@@ -21,7 +21,7 @@ class RectangleRenderer : public IDrawable{
 		 * @param height Height of the drawn rectangle, before scale.
 		 * @param color Color to draw with.
 		 */
-		RectangleRenderer(IGameTransform* transform, float width = 10, float height = 10, Color color = WHITE);
+		RectangleRenderer(GameTransform* transform, float width = 10, float height = 10, Color color = WHITE);
 
 		/**
 		 * @brief Draws the rectangle outline at the transform's position, scaled by the transform's scale.

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IDrawable.hpp"
-#include "../transform/IGameTransform.hpp"
+#include "../transform/GameTransform.hpp"
 #include "../ICollider.hpp"
 #include <vector>
 
@@ -9,7 +9,7 @@ using namespace std;
 
 class RectangleCollider : public ICollider, public IDrawable{
 	private:
-		IGameTransform* transform;
+		GameTransform* transform;
 		float width;
 		float height;
 		Color color;
@@ -29,7 +29,7 @@ class RectangleCollider : public ICollider, public IDrawable{
 		 * @param enabled Whether collision detection starts enabled.
 		 * @param show Whether the debug outline is drawn (see Draw()).
 		 */
-		RectangleCollider(IGameTransform* transform, float width = 20, float height = 20, bool enabled = true, bool show = false);
+		RectangleCollider(GameTransform* transform, float width = 20, float height = 20, bool enabled = true, bool show = false);
 
 		bool IsEnabled() const override;
 		void SetEnabled(bool enabled) override;

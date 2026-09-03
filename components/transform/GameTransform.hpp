@@ -1,12 +1,15 @@
 #pragma once
+#include "raylib.h"
+class GameObject;
 
-#include "IGameTransform.hpp"
-
-class GameTransform : public IGameTransform{
+class GameTransform{
 	private:
 		Vector2 position;
+		Vector2 localPosition;
 		Vector2 rotation;
 	  float scale;
+		GameObject* gameObject;
+
 
 	public:
 		/**
@@ -17,12 +20,19 @@ class GameTransform : public IGameTransform{
 		 */
 		GameTransform(Vector2 position = {0, 0}, Vector2 rotation = {0, 0}, float scale = 1);
 
-		Vector2 GetPosition() const override;
-		void SetPosition(Vector2 position) override;
+		Vector2 GetPosition();
+		void SetPosition(Vector2 position);
 
-		Vector2 GetRotation() const override;
-		void SetRotation(Vector2 rotation) override;
+		Vector2 GetRotation();
+		void SetRotation(Vector2 rotation);
 
-		float GetScale() const override;
-		void SetScale(float scale) override;
+		float GetScale();
+		void SetScale(float scale);
+
+		Vector2 GetLocalPosition();
+		void SetLocalPosition(Vector2 localPosition);
+
+		void Start(GameObject* owner);
+		GameObject* GetGameObject();
+		GameTransform* GetParent();
 };

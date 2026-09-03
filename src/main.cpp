@@ -70,8 +70,7 @@ int main(){
 			std::move(rectangleRenderer),
 			std::move(rectangleCollider),
 			std::move(rbRect),
-			std::move(rectangleBehaviours),
-			&circleObject
+			std::move(rectangleBehaviours)
 		);
 
 	vector<GameObject*> gameObjects;

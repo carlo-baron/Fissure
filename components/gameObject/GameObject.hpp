@@ -1,11 +1,12 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "../transform/IGameTransform.hpp"
 #include "../IDrawable.hpp"
 #include "../collider/ICollider.hpp"
 #include "../physics/Rigidbody.hpp"
 #include "../ICustomBehaviour.hpp"
+#include "../transform/GameTransform.hpp"
+
 using namespace std;
 
 /**
@@ -18,13 +19,11 @@ using namespace std;
  */
 class GameObject{
 	private:
-		unique_ptr<IGameTransform> transform;
+		unique_ptr<GameTransform> transform;
 		unique_ptr<IDrawable> drawable;
 		unique_ptr<ICollider> collider;
 		unique_ptr<Rigidbody> rigidbody;
 		vector<unique_ptr<ICustomBehaviour>> customBehaviours;
-		GameObject* parent = nullptr;
-		vector<unique_ptr<GameObject>> children;
 
 	public:
 		/**
@@ -43,13 +42,11 @@ class GameObject{
 		 * @param customBehaviour Optional per-object logic.
 		 */
 		GameObject(
-			unique_ptr<IGameTransform> transform,
+			unique_ptr<GameTransform> transform,
 			unique_ptr<IDrawable> drawable,
 			unique_ptr<ICollider> collider = nullptr,
 			unique_ptr<Rigidbody> rigidbody = nullptr,
-			vector<unique_ptr<ICustomBehaviour>> customBehaviours = {},
-			GameObject* parent = nullptr,
-			vector<unique_ptr<GameObject>> children = {}
+			vector<unique_ptr<ICustomBehaviour>> customBehaviours = {}
 		);
  
 		/**
@@ -61,17 +58,10 @@ class GameObject{
 		 */
 		void Update();
 
-		GameObject* GetParent();
-		void SetParent(GameObject* parent);
-
-		vector<GameObject*> GetChildren();
-		void AddChild(unique_ptr<GameObject> child);
-		void RemoveChild(GameObject* child);
-
 		/**
 		 * @brief Returns the requested component, or nullptr if the object doesn't have one.
 		 *
-		 * @tparam T The component interface to look up (IGameTransform,
+		 * @tparam T The component interface to look up (GameTransform,
 		 * IDrawable, ICollider, Rigidbody or ICustomBehaviour). The
 		 * specializations below map each interface to its member.
 		 * @return A non-owning pointer to the component, or nullptr.
@@ -94,7 +84,7 @@ T* GameObject::GetComponent() {
 }
 
 template<>
-inline IGameTransform* GameObject::GetComponent<IGameTransform>() {
+inline GameTransform* GameObject::GetComponent<GameTransform>() {
 	return transform.get();
 }
 
