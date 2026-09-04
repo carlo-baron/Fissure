@@ -17,6 +17,10 @@ GameObject::GameObject(
 	this->rigidbody = std::move(rigidbody);
 	this->customBehaviours = std::move(customBehaviours);
 
+	if(transform){
+		this->transform->Start(this);
+	}
+
 	for(auto& customBehaviour : this->customBehaviours){
 		customBehaviour->Start(this);
 	}

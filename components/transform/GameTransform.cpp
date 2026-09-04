@@ -1,4 +1,7 @@
 #include "GameTransform.hpp"
+#include <algorithm>
+#include <iostream>
+#include <raymath.h>
 
 GameTransform::GameTransform(Vector2 position, Vector2 rotation, float scale){
 	this->position = position;
@@ -6,11 +9,23 @@ GameTransform::GameTransform(Vector2 position, Vector2 rotation, float scale){
 	this->scale = scale;
 
 	this->localPosition = position;
+
+	std::cout << position.x << ", " << position.y << std::endl;
 }
 
 Vector2 GameTransform::GetPosition() {
-	return this->position;
+	if (!this->parent) {
+		return this->position;
+	}
+
+	Vector2 parentPos = this->parent->GetPosition();
+	float parentScale = this->parent->GetScale();
+	return Vector2{
+		parentPos.x + this->localPosition.x * parentScale,
+		parentPos.y + this->localPosition.y * parentScale
+	};
 }
+
 void GameTransform::SetPosition(Vector2 position){
 	this->position = position;
 }
@@ -45,6 +60,44 @@ GameObject* GameTransform::GetGameObject(){
 	return this->gameObject;
 }
 
-GameTransform* GetParent(){
-	return nullptr;
+GameTransform* GameTransform::GetParent(){
+	return this->parent;
+}
+
+void GameTransform::SetParent(GameTransform* parent){
+	std::cout << GetPosition().x << ", " << GetPosition().y << std::endl;
+	if(parent == this) return;
+	if(this->parent == parent) return;
+
+	Vector2 currentWorldPos = this->GetPosition();
+
+	if(this->parent != nullptr){
+		auto& siblings = this->parent->children;
+		auto it = std::find(siblings.begin(), siblings.end(), this);
+		if(it != siblings.end()){
+			siblings.erase(it);
+		}
+	}
+
+	this->parent = parent;
+
+	if(parent){
+		parent->children.push_back(this);
+		Vector2 parentWorldPos = parent->GetPosition();
+		float parentScale = parent->GetScale();
+		this->localPosition = Vector2{
+			(currentWorldPos.x - parentWorldPos.x) / parentScale,
+				(currentWorldPos.y - parentWorldPos.y) / parentScale
+		};
+	} else {
+		this->position = currentWorldPos;
+	}
+}
+
+GameTransform* GameTransform::GetChild(int index){
+	return this->children.at(index);
+}
+
+int GameTransform::GetChildCount(){
+	return this->children.size();
 }

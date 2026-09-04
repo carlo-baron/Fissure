@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include <vector>
 class GameObject;
 
 class GameTransform{
@@ -9,15 +10,10 @@ class GameTransform{
 		Vector2 rotation;
 	  float scale;
 		GameObject* gameObject;
-
+		GameTransform* parent = nullptr;
+		std::vector<GameTransform*> children = {};
 
 	public:
-		/**
-		 * @brief Creates a transform with the given values (position {0,0}, rotation {0,0}, scale 1 by default).
-		 * @param position Initial world position.
-		 * @param rotation Initial rotation.
-		 * @param scale Initial scale multiplier.
-		 */
 		GameTransform(Vector2 position = {0, 0}, Vector2 rotation = {0, 0}, float scale = 1);
 
 		Vector2 GetPosition();
@@ -34,5 +30,10 @@ class GameTransform{
 
 		void Start(GameObject* owner);
 		GameObject* GetGameObject();
+
 		GameTransform* GetParent();
+		void SetParent(GameTransform* parent);
+		
+		GameTransform* GetChild(int index);
+		int GetChildCount();
 };

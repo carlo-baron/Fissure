@@ -47,7 +47,7 @@ int main(){
 		);
 
 	unique_ptr<GameTransform> transform1 =
-		make_unique<GameTransform>(Vector2{0, 70});
+		make_unique<GameTransform>(Vector2{0, 0});
 
 	unique_ptr<RectangleRenderer> rectangleRenderer =
 		make_unique<RectangleRenderer>(transform1.get(), 50, 50);
@@ -72,6 +72,8 @@ int main(){
 			std::move(rbRect),
 			std::move(rectangleBehaviours)
 		);
+
+	rectangleObject.GetComponent<GameTransform>()->SetParent(circleObject.GetComponent<GameTransform>());
 
 	vector<GameObject*> gameObjects;
 	gameObjects.push_back(&circleObject);
