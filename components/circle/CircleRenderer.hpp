@@ -1,12 +1,12 @@
 #pragma once
 
 #include "../IDrawable.hpp"
+#include "GameTransform.hpp"
 #include "raylib.h"
-#include "../transform/IGameTransform.hpp"
 
 class CircleRenderer : public IDrawable{
 	private:
-		IGameTransform* transform;
+		GameTransform* transform;
 		float radius;
 		Color color;
 
@@ -20,7 +20,7 @@ class CircleRenderer : public IDrawable{
 		 * @param radius Radius of the drawn circle, before scale.
 		 * @param color Color to draw with.
 		 */
-		CircleRenderer(IGameTransform* transform, float radius = 10, Color color = WHITE);
+		CircleRenderer(GameTransform* transform, float radius = 10, Color color = WHITE);
 
 		/**
 		 * @brief Draws the circle outline at the transform's position, scaled by the transform's scale.

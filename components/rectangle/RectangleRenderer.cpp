@@ -1,7 +1,7 @@
 #include "RectangleRenderer.hpp"
 #include "raylib.h"
 
-RectangleRenderer::RectangleRenderer(IGameTransform* transform, float width, float height, Color color){
+RectangleRenderer::RectangleRenderer(GameTransform* transform, float width, float height, Color color){
 	this->transform = transform;
 	this->width = width;
 	this->height = height;

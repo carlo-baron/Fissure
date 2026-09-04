@@ -1,6 +1,6 @@
 #include "RectangleCollider.hpp"
 
-RectangleCollider::RectangleCollider(IGameTransform* transform, float width, float height, bool enabled, bool show){
+RectangleCollider::RectangleCollider(GameTransform* transform, float width, float height, bool enabled, bool show){
 	this->transform = transform;
 	this->width = width;
 	this->height = height;

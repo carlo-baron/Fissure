@@ -2,9 +2,10 @@
 #include "IDrawable.hpp"
 #include <raylib.h>
 #include <raymath.h>
+#include <utility>
 
 GameObject::GameObject(
-	unique_ptr<IGameTransform> transform,
+	unique_ptr<GameTransform> transform,
 	unique_ptr<IDrawable> drawable,
 	unique_ptr<ICollider> collider,
 	unique_ptr<Rigidbody> rigidbody,
@@ -15,6 +16,10 @@ GameObject::GameObject(
 	this->collider = std::move(collider);
 	this->rigidbody = std::move(rigidbody);
 	this->customBehaviours = std::move(customBehaviours);
+
+	if(transform){
+		this->transform->Start(this);
+	}
 
 	for(auto& customBehaviour : this->customBehaviours){
 		customBehaviour->Start(this);

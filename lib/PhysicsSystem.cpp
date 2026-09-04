@@ -29,7 +29,7 @@ void PhysicsSystem::PhysicsHandler(){
 
 		if(!rb || rb->GetType() == RigidbodyType::Static || rb->GetType() == RigidbodyType::Kinematic) continue;
 
-		IGameTransform* transform = object->GetComponent<IGameTransform>();
+		GameTransform* transform = object->GetComponent<GameTransform>();
 
 		// gravity now accumulate
 		if(rb->GetGravity() > 0){

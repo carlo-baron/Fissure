@@ -1,7 +1,7 @@
 #include "CircleRenderer.hpp"
 #include <raylib.h>
 
-CircleRenderer::CircleRenderer(IGameTransform* transform, float radius, Color color){
+CircleRenderer::CircleRenderer(GameTransform* transform, float radius, Color color){
 	this->transform = transform;
 	this->radius = radius;
 	this->color = color;

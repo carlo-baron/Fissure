@@ -1,6 +1,6 @@
 #include "CircleCollider.hpp"
 
-CircleCollider::CircleCollider(IGameTransform* transform, float radius, bool enabled, bool show){
+CircleCollider::CircleCollider(GameTransform* transform, float radius, bool enabled, bool show){
 	this->transform = transform;
 	this->radius = radius;
 	this->enabled = enabled;
