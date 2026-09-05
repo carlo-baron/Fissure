@@ -34,7 +34,6 @@ int main(){
 	unique_ptr<CircleCollider> circleCollider =
 		make_unique<CircleCollider>(transform.get(), 50);
 	unique_ptr<Rigidbody> rb = make_unique<Rigidbody>();
-	rb->SetGravity(0.01);
 	rb->SetVelocity(Vector2{0, 0});
 	rb->SetBounciness(0);
 	rb->SetMass(20);
@@ -47,7 +46,7 @@ int main(){
 		);
 
 	unique_ptr<GameTransform> transform1 =
-		make_unique<GameTransform>(Vector2{0, 0});
+		make_unique<GameTransform>(center, Vector2{25, 25}); // 50 is width and height
 
 	unique_ptr<RectangleRenderer> rectangleRenderer =
 		make_unique<RectangleRenderer>(transform1.get(), 50, 50);
@@ -72,8 +71,6 @@ int main(){
 			std::move(rbRect),
 			std::move(rectangleBehaviours)
 		);
-
-	rectangleObject.GetComponent<GameTransform>()->SetParent(circleObject.GetComponent<GameTransform>());
 
 	vector<GameObject*> gameObjects;
 	gameObjects.push_back(&circleObject);

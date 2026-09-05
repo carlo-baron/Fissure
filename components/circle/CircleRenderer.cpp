@@ -8,7 +8,8 @@ CircleRenderer::CircleRenderer(GameTransform* transform, float radius, Color col
 }
 
 void CircleRenderer::Draw() const {
-	DrawCircleLinesV(transform->GetPosition(), this->radius * transform->GetScale(), this->color);
+	Vector2 position = transform->GetPosition();
+	DrawCircle(position.x, position.y, this->radius * transform->GetScale(), this->color);
 }
 
 float CircleRenderer::GetRadius(){

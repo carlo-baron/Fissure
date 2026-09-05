@@ -8,6 +8,7 @@ class RectangleRenderer : public IDrawable{
 		GameTransform* transform;
 		float width;
 		float height;
+		Vector2 origin;
 		Color color;
 
 	public:

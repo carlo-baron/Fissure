@@ -15,6 +15,7 @@ class RectangleCollider : public ICollider, public IDrawable{
 		Color color;
 		bool enabled;
 		bool show;
+		Vector2 origin;
 		vector<ICollisionListener*> listeners;
 
 	public:
@@ -29,7 +30,14 @@ class RectangleCollider : public ICollider, public IDrawable{
 		 * @param enabled Whether collision detection starts enabled.
 		 * @param show Whether the debug outline is drawn (see Draw()).
 		 */
-		RectangleCollider(GameTransform* transform, float width = 20, float height = 20, bool enabled = true, bool show = false);
+		RectangleCollider(
+			GameTransform* transform,
+			float width = 20,
+			float height = 20,
+			bool enabled = true,
+			bool show = false,
+			Color color = GREEN
+		);
 
 		bool IsEnabled() const override;
 		void SetEnabled(bool enabled) override;
@@ -61,4 +69,6 @@ class RectangleCollider : public ICollider, public IDrawable{
 		void OnCollisionEnter(ICollider* other) const override;
 		void OnCollisionExit(ICollider* other) const override;
 		void AddListener(ICollisionListener* listener) override;
+
+		Vector2 GetOrigin();
 };

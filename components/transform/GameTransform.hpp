@@ -6,6 +6,7 @@ class GameObject;
 class GameTransform{
 	private:
 		Vector2 position;
+		Vector2 origin;
 		Vector2 localPosition;
 		Vector2 rotation;
 	  float scale;
@@ -14,7 +15,7 @@ class GameTransform{
 		std::vector<GameTransform*> children = {};
 
 	public:
-		GameTransform(Vector2 position = {0, 0}, Vector2 rotation = {0, 0}, float scale = 1);
+		GameTransform(Vector2 position = {0, 0}, Vector2 shapeOrigin = {0, 0}, Vector2 rotation = {0, 0}, float scale = 1);
 
 		Vector2 GetPosition();
 		void SetPosition(Vector2 position);
@@ -36,4 +37,7 @@ class GameTransform{
 		
 		GameTransform* GetChild(int index);
 		int GetChildCount();
+
+		Vector2 GetOrigin();
+		void SetOrigin(Vector2 origin);
 };

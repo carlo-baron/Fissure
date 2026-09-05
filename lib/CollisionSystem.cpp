@@ -67,15 +67,18 @@ optional<Vector2> CollisionSystem::RectangleRectangleCollision(RectangleCollider
 	if(!rectA || !rectB) return nullopt;
 	if(!rectA->IsEnabled() || !rectB->IsEnabled()) return nullopt;
 
-	float leftA = rectA->GetPosition().x;
-	float rightA = leftA + rectA->GetWidth();
-	float topA = rectA->GetPosition().y;
-	float bottomA = topA + rectA->GetHeight();
+	Vector2 originA = rectA->GetOrigin();
+	Vector2 originB = rectB->GetOrigin();
 
-	float leftB = rectB->GetPosition().x;
-	float rightB = leftB + rectB->GetWidth();
-	float topB = rectB->GetPosition().y;
-	float bottomB = topB + rectB->GetHeight();
+	float leftA = rectA->GetPosition().x - originA.x;
+	float rightA = leftA + rectA->GetWidth() + originB.x;
+	float topA = rectA->GetPosition().y - originA.y;
+	float bottomA = topA + rectA->GetHeight() + originA.y;
+
+	float leftB = rectB->GetPosition().x - originB.x;
+	float rightB = leftB + rectB->GetWidth() + originB.x;
+	float topB = rectB->GetPosition().y - originB.y;
+	float bottomB = topB + rectB->GetHeight() + originB.y;
 
 	float overlapX = min(rightA, rightB) - max(leftA, leftB);
 	float overlapY = min(bottomA, bottomB) - max(topA, topB);
@@ -100,8 +103,10 @@ optional<Vector2> CollisionSystem::CircleRectangleCollision(CircleCollider* circ
 	if(!circle || !rect) return nullopt;
 	if(!circle->IsEnabled() || !rect->IsEnabled()) return nullopt;
 
-	float closeX = clamp(circle->GetPosition().x, rect->GetPosition().x, rect->GetPosition().x + rect->GetWidth());
-	float closeY = clamp(circle->GetPosition().y, rect->GetPosition().y, rect->GetPosition().y + rect->GetHeight());
+	Vector2 rectOrigin = rect->GetOrigin();
+
+	float closeX = clamp(circle->GetPosition().x, rect->GetPosition().x - (rectOrigin.x), rect->GetPosition().x + rectOrigin.x);
+	float closeY = clamp(circle->GetPosition().y, rect->GetPosition().y - rectOrigin.y, rect->GetPosition().y + rectOrigin.y);
 	Vector2 displacementVector = Vector2Subtract(circle->GetPosition(), { closeX, closeY });
 	float distance = Vector2Distance(circle->GetPosition(), { closeX, closeY });
 
