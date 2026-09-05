@@ -3,16 +3,16 @@
 #include "../ICollider.hpp"
 #include "../../IDrawable.hpp"
 #include "raylib.h"
-#include "../../transform/IGameTransform.hpp"
+#include "../../transform/GameTransform.hpp"
 #include <vector>
 
 using namespace std;
 
 class CircleCollider : public ICollider, public IDrawable{
 	private:
-		IGameTransform* transform;
+		GameTransform* transform;
 		float radius;
-		Color color = GREEN;
+		Color color;
 		bool enabled;
 		bool show;
 		vector<ICollisionListener*> listeners;
@@ -28,7 +28,7 @@ class CircleCollider : public ICollider, public IDrawable{
 		 * @param enabled Whether collision detection starts enabled.
 		 * @param show Whether the debug outline is drawn (see Draw()).
 		 */
-		CircleCollider(IGameTransform* transform, float radius = 10, bool enabled = true, bool show = false);
+		CircleCollider(GameTransform* transform, float radius = 10, bool enabled = true, bool show = false, Color color = GREEN);
 
 		bool IsEnabled() const override;
 		void SetEnabled(bool enabled) override;

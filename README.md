@@ -30,7 +30,7 @@ flags for Linux and macOS).
 
 | Slot | Interface | Concrete implementations | Purpose |
 |------|-----------|--------------------------|---------|
-| Transform (required) | `IGameTransform` | `GameTransform` | Position, rotation (as `Vector2`), uniform scale |
+| Transform (required) | `GameTransform` | `GameTransform` | Position, rotation (as `Vector2`), uniform scale |
 | Drawable (required) | `IDrawable` | `CircleRenderer`, `RectangleRenderer` | Renders itself each frame; color exposed through the interface |
 | Collider (optional) | `ICollider` | `CircleCollider`, `RectangleCollider` | Collision shape; also the Subject of collision events |
 | Rigidbody (optional) | — | `Rigidbody` | Mass, velocity, gravity multiplier, `RigidbodyType` |
@@ -62,7 +62,7 @@ build              build script
 
 ### Components hold narrow references — except ICustomBehaviour
 
-Renderers and colliders only keep the specific reference they need: an `IGameTransform*`,
+Renderers and colliders only keep the specific reference they need: an `GameTransform*`,
 never a `GameObject*`. A component that only needs the position shouldn't see the whole object.
 
 `ICustomBehaviour` is the deliberate exception: custom logic usually needs to fetch arbitrary

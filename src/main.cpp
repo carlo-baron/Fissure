@@ -1,13 +1,16 @@
 #include "CircleRenderer.hpp"
 #include "GameTransform.hpp"
 #include "RectangleRenderer.hpp"
+#include "physics/Rigidbody.hpp"
 #include "raylib.h"
+#include <memory>
 #include <string>
 #include <vector>
 #include "../components/gameObject/GameObject.hpp"
 #include "../lib/CollisionSystem.hpp"
 #include "../lib/PhysicsSystem.hpp"
 #include "../factory/GameObjectFactory.hpp"
+#include "rectangle/RectangleBehaviour.hpp"
 
 using namespace std;
 
@@ -25,15 +28,15 @@ int main(){
 
 	// Game Objects
 	unique_ptr<GameTransform> transform =
-		make_unique<GameTransform>(Vector2{25, center.y});
+		make_unique<GameTransform>(Vector2{center.x, 0});
 	unique_ptr<CircleRenderer> circleRenderer =
 		make_unique<CircleRenderer>(transform.get(), 50);
 	unique_ptr<CircleCollider> circleCollider =
 		make_unique<CircleCollider>(transform.get(), 50);
 	unique_ptr<Rigidbody> rb = make_unique<Rigidbody>();
-	rb->SetGravity(0);
-	rb->SetVelocity(Vector2{1});
-	rb->SetMass(50);
+	rb->SetVelocity(Vector2{0, 0});
+	rb->SetBounciness(0);
+	rb->SetMass(20);
 
 	GameObject circleObject(
 			std::move(transform),
@@ -42,9 +45,8 @@ int main(){
 			std::move(rb)
 		);
 
-
 	unique_ptr<GameTransform> transform1 =
-		make_unique<GameTransform>(Vector2{(float)GetScreenWidth() - 50, center.y});
+		make_unique<GameTransform>(center, Vector2{25, 25}); // 50 is width and height
 
 	unique_ptr<RectangleRenderer> rectangleRenderer =
 		make_unique<RectangleRenderer>(transform1.get(), 50, 50);
@@ -53,14 +55,21 @@ int main(){
 		make_unique<RectangleCollider>(transform1.get(), 50, 50);
 
 	unique_ptr<Rigidbody> rbRect = make_unique<Rigidbody>();
+	rbRect->SetType(RigidbodyType::Static);
 	rbRect->SetGravity(0);
-	rbRect->SetVelocity(Vector2{-1, 0});
+	rbRect->SetVelocity(Vector2{0, 0});
+
+	unique_ptr<RectangleBehaviour> rectBehaviour = make_unique<RectangleBehaviour>();
+
+	vector<unique_ptr<ICustomBehaviour>> rectangleBehaviours;
+	rectangleBehaviours.push_back(std::move(rectBehaviour));
 
 	GameObject rectangleObject(
 			std::move(transform1),
 			std::move(rectangleRenderer),
 			std::move(rectangleCollider),
-			std::move(rbRect)
+			std::move(rbRect),
+			std::move(rectangleBehaviours)
 		);
 
 	vector<GameObject*> gameObjects;

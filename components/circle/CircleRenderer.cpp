@@ -1,14 +1,15 @@
 #include "CircleRenderer.hpp"
 #include <raylib.h>
 
-CircleRenderer::CircleRenderer(IGameTransform* transform, float radius, Color color){
+CircleRenderer::CircleRenderer(GameTransform* transform, float radius, Color color){
 	this->transform = transform;
 	this->radius = radius;
 	this->color = color;
 }
 
 void CircleRenderer::Draw() const {
-	DrawCircleLinesV(transform->GetPosition(), this->radius * transform->GetScale(), this->color);
+	Vector2 position = transform->GetPosition();
+	DrawCircle(position.x, position.y, this->radius * transform->GetScale(), this->color);
 }
 
 float CircleRenderer::GetRadius(){

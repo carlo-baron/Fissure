@@ -1,10 +1,12 @@
 #pragma once
 #include <memory>
-#include "../transform/IGameTransform.hpp"
+#include <vector>
 #include "../IDrawable.hpp"
 #include "../collider/ICollider.hpp"
 #include "../physics/Rigidbody.hpp"
 #include "../ICustomBehaviour.hpp"
+#include "../transform/GameTransform.hpp"
+
 using namespace std;
 
 /**
@@ -17,11 +19,12 @@ using namespace std;
  */
 class GameObject{
 	private:
-		unique_ptr<IGameTransform> transform;
+		unique_ptr<GameTransform> transform;
 		unique_ptr<IDrawable> drawable;
 		unique_ptr<ICollider> collider;
 		unique_ptr<Rigidbody> rigidbody;
-		unique_ptr<ICustomBehaviour> customBehaviour;
+		vector<unique_ptr<ICustomBehaviour>> customBehaviours;
+
 	public:
 		/**
 		 * @brief Assembles the object from its components, taking exclusive ownership of them.
@@ -39,13 +42,13 @@ class GameObject{
 		 * @param customBehaviour Optional per-object logic.
 		 */
 		GameObject(
-			unique_ptr<IGameTransform> transform,
+			unique_ptr<GameTransform> transform,
 			unique_ptr<IDrawable> drawable,
 			unique_ptr<ICollider> collider = nullptr,
 			unique_ptr<Rigidbody> rigidbody = nullptr,
-			unique_ptr<ICustomBehaviour> customBehaviour = nullptr
+			vector<unique_ptr<ICustomBehaviour>> customBehaviours = {}
 		);
-
+ 
 		/**
 		 * @brief Renders the drawable, then the collider's debug outline if a collider is present.
 		 */
@@ -58,7 +61,7 @@ class GameObject{
 		/**
 		 * @brief Returns the requested component, or nullptr if the object doesn't have one.
 		 *
-		 * @tparam T The component interface to look up (IGameTransform,
+		 * @tparam T The component interface to look up (GameTransform,
 		 * IDrawable, ICollider, Rigidbody or ICustomBehaviour). The
 		 * specializations below map each interface to its member.
 		 * @return A non-owning pointer to the component, or nullptr.
@@ -70,11 +73,18 @@ class GameObject{
 
 template<typename T>
 T* GameObject::GetComponent() {
+	if constexpr (std::is_base_of_v<ICustomBehaviour, T>) {
+		for(auto& behaviour : customBehaviours) {
+			if(auto* component = dynamic_cast<T*>(behaviour.get()))
+				return component;
+		}
+	}
+
 	return nullptr;
 }
 
 template<>
-inline IGameTransform* GameObject::GetComponent<IGameTransform>() {
+inline GameTransform* GameObject::GetComponent<GameTransform>() {
 	return transform.get();
 }
 
@@ -91,9 +101,4 @@ inline ICollider* GameObject::GetComponent<ICollider>() {
 template<>
 inline Rigidbody* GameObject::GetComponent<Rigidbody>() {
 	return rigidbody.get();
-}
-
-template<>
-inline ICustomBehaviour* GameObject::GetComponent<ICustomBehaviour>() {
-	return customBehaviour.get();
 }

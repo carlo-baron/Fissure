@@ -1,10 +1,11 @@
 #include "CircleCollider.hpp"
 
-CircleCollider::CircleCollider(IGameTransform* transform, float radius, bool enabled, bool show){
+CircleCollider::CircleCollider(GameTransform* transform, float radius, bool enabled, bool show, Color color){
 	this->transform = transform;
 	this->radius = radius;
 	this->enabled = enabled;
 	this->show = show;
+	this->color = color;
 }
 
 void CircleCollider::Draw() const{
