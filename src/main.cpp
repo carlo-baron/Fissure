@@ -8,7 +8,6 @@
 #include <vector>
 #include "../components/gameObject/GameObject.hpp"
 #include "../lib/GameWorld.hpp"
-#include "../factory/GameObjectFactory.hpp"
 #include "rectangle/RectangleBehaviour.hpp"
 
 using namespace std;
@@ -21,9 +20,6 @@ int main(){
 		GetScreenWidth() / 2.0f,
 		GetScreenHeight() / 2.0f
 	};
-
-	// Factory
-	GameObjectFactory gameObjectFactory;
 
 	// Game Objects
 	unique_ptr<GameTransform> transform =
