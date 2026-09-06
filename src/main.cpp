@@ -1,6 +1,7 @@
-#include "../Fissure.hpp"
+#include "../Fissure/Fissure.hpp"
 #include "rectangle/RectangleBehaviour.hpp"
 #include <string>
+#include "raylib.h"
 
 using namespace std;
 
