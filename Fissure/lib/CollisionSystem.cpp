@@ -11,15 +11,13 @@
 
 using namespace std;
 
-CollisionSystem::CollisionSystem(vector<GameObject*> gameObjects){
-	this->gameObjects = gameObjects; 
-}
+CollisionSystem::CollisionSystem(vector<unique_ptr<GameObject>>& gameObjects) : gameObjects(gameObjects) {}
 
 void CollisionSystem::CollisionHandler(){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
 		for(int j = i + 1; j < (int)gameObjects.size(); j++){
-			ICollider* colliderA = gameObjects[i]->GetComponent<ICollider>();
-			ICollider* colliderB = gameObjects[j]->GetComponent<ICollider>();
+			ICollider* colliderA = gameObjects.at(i)->GetComponent<ICollider>();
+			ICollider* colliderB = gameObjects.at(j)->GetComponent<ICollider>();
 			if(!colliderA || !colliderB) continue;
 
 			ShapeType shapeA = colliderA->GetShapeType();
@@ -198,3 +196,12 @@ void CollisionSystem::NotifyListenersExit(ICollider* colliderA, ICollider* colli
 	}
 }
 
+void CollisionSystem::RemoveTrackedCollider(ICollider* collider){
+	for(auto it = activeCollisions.begin(); it != activeCollisions.end(); ){
+		if(it->first == collider || it->second == collider){
+			it = activeCollisions.erase(it);
+		}else{
+			++it;
+		}
+	}
+}

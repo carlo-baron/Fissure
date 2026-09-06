@@ -1,4 +1,5 @@
 #include "RectangleBehaviour.hpp"
+#include <raylib.h>
 
 RectangleBehaviour::RectangleBehaviour(){}
 
@@ -16,9 +17,8 @@ void RectangleBehaviour::Update(){
 }
 
 void RectangleBehaviour::OnCollisionEnter(ICollider* other) const {
-	this->gameObject->GetComponent<IDrawable>()->SetColor(RED);
+	if(other){
+		gameObject->Destroy();
+	}
 }
-
-void RectangleBehaviour::OnCollisionExit(ICollider* other) const {
-	this->gameObject->GetComponent<IDrawable>()->SetColor(WHITE);
-}
+void RectangleBehaviour::OnCollisionExit(ICollider* other) const {}

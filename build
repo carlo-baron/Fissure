@@ -1,31 +1,37 @@
 #!/bin/bash
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    g++ -std=c++17 $(find src components factory customBehaviours helpers -name "*.cpp") \
-        $(find lib -name "*.cpp" 2>/dev/null) \
-				-Ihelpers \
+    g++ -std=c++17 -g $(find src customBehaviours Fissure/helpers -name "*.cpp") \
+        $(find Fissure/lib -name "*.cpp" 2>/dev/null) \
+        $(find Fissure/components -name "*.cpp" 2>/dev/null) \
+        $(find Fissure/factory -name "*.cpp" 2>/dev/null) \
+				-IFissure/helpers \
 				-IcustomBehaviours \
-        -Ifactory \
-        -Icomponents \
-        -Icomponents/circle \
-        -Icomponents/gameObject \
-        -Icomponents/rectangle \
-        -Icomponents/transform \
+        -IFissure/factory \
+        -IFissure/components \
+        -IFissure/components/circle \
+        -IFissure/components/gameObject \
+        -IFissure/components/rectangle \
+        -IFissure/components/transform \
+        -IFissure \
         -I/usr/local/include \
         -L/usr/local/lib \
         -o run \
         -lraylib -lm -lpthread -ldl
 else
-    g++ -std=c++17 $(find src components factory customBehaviours helpers -name "*.cpp") \
-        $(find lib -name "*.cpp" 2>/dev/null) \
-				-Ihelpers \
+    g++ -std=c++17 -g $(find src customBehaviours Fissure/helpers -name "*.cpp") \
+        $(find Fissure/lib -name "*.cpp" 2>/dev/null) \
+        $(find Fissure/components -name "*.cpp" 2>/dev/null) \
+        $(find Fissure/factory -name "*.cpp" 2>/dev/null) \
+				-IFissure/helpers \
 				-IcustomBehaviours \
-        -Ifactory \
-        -Icomponents \
-        -Icomponents/circle \
-        -Icomponents/gameObject \
-        -Icomponents/rectangle \
-        -Icomponents/transform \
+        -IFissure/factory \
+        -IFissure/components \
+        -IFissure/components/circle \
+        -IFissure/components/gameObject \
+        -IFissure/components/rectangle \
+        -IFissure/components/transform \
+        -IFissure \
         -o run \
         -lraylib -lm -lpthread -ldl -lX11
 fi

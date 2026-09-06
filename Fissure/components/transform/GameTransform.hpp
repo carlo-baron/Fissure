@@ -35,6 +35,7 @@ class GameTransform{
 		GameTransform* GetParent();
 		void SetParent(GameTransform* parent);
 		
+		std::vector<GameTransform*> GetChildren();
 		GameTransform* GetChild(int index);
 		int GetChildCount();
 

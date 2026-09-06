@@ -1,5 +1,6 @@
 #include "GameObject.hpp"
 #include "IDrawable.hpp"
+#include <queue>
 #include <raylib.h>
 #include <raymath.h>
 #include <utility>
@@ -17,7 +18,7 @@ GameObject::GameObject(
 	this->rigidbody = std::move(rigidbody);
 	this->customBehaviours = std::move(customBehaviours);
 
-	if(transform){
+	if(this->transform){
 		this->transform->Start(this);
 	}
 
@@ -38,3 +39,24 @@ void GameObject::Update(){
 		customBehaviour->Update();
 	}
 }
+
+void GameObject::Destroy(){
+	queue<GameTransform*> q;
+	q.push(this->transform.get());
+
+	while(q.size() != 0){
+		int nodeCount = q.size();
+
+		for(int i = 0; i < nodeCount; i++){
+			GameTransform* curr = q.front();
+			q.pop();
+
+			curr->GetGameObject()->markForDestruction = true;
+			for(GameTransform* child : curr->GetChildren()){
+				q.push(child);
+			}			
+		}
+	}
+}
+
+bool GameObject::IsMarkedForDestruction(){ return this->markForDestruction; }

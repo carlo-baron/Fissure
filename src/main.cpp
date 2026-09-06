@@ -1,16 +1,7 @@
-#include "CircleRenderer.hpp"
-#include "GameTransform.hpp"
-#include "RectangleRenderer.hpp"
-#include "physics/Rigidbody.hpp"
-#include "raylib.h"
-#include <memory>
-#include <string>
-#include <vector>
-#include "../components/gameObject/GameObject.hpp"
-#include "../lib/CollisionSystem.hpp"
-#include "../lib/PhysicsSystem.hpp"
-#include "../factory/GameObjectFactory.hpp"
+#include "../Fissure/Fissure.hpp"
 #include "rectangle/RectangleBehaviour.hpp"
+#include <string>
+#include "raylib.h"
 
 using namespace std;
 
@@ -22,9 +13,6 @@ int main(){
 		GetScreenWidth() / 2.0f,
 		GetScreenHeight() / 2.0f
 	};
-
-	// Factory
-	GameObjectFactory gameObjectFactory;
 
 	// Game Objects
 	unique_ptr<GameTransform> transform =
@@ -38,7 +26,7 @@ int main(){
 	rb->SetBounciness(0);
 	rb->SetMass(20);
 
-	GameObject circleObject(
+	unique_ptr< GameObject > circleObject = make_unique<GameObject>(
 			std::move(transform),
 			std::move(circleRenderer),
 			std::move(circleCollider),
@@ -64,7 +52,7 @@ int main(){
 	vector<unique_ptr<ICustomBehaviour>> rectangleBehaviours;
 	rectangleBehaviours.push_back(std::move(rectBehaviour));
 
-	GameObject rectangleObject(
+	unique_ptr<GameObject> rectangleObject = make_unique<GameObject>(
 			std::move(transform1),
 			std::move(rectangleRenderer),
 			std::move(rectangleCollider),
@@ -72,32 +60,21 @@ int main(){
 			std::move(rectangleBehaviours)
 		);
 
-	vector<GameObject*> gameObjects;
-	gameObjects.push_back(&circleObject);
-	gameObjects.push_back(&rectangleObject);
-
-	// Systems
-	CollisionSystem collisionSystem(gameObjects);
-	PhysicsSystem physicsSystem(gameObjects, &collisionSystem);
+	GameWorld world;
+	world.AddObject(std::move(circleObject));
+	world.AddObject(std::move(rectangleObject));
 	
 	while(!WindowShouldClose()){
 		int fps = GetFPS();
-
-		collisionSystem.CollisionHandler();
-		physicsSystem.PhysicsHandler();
 
 		BeginDrawing();
 			ClearBackground(BLACK);
 
 			DrawText(to_string(fps).c_str(), 465, 5, 24, GREEN);
 
-			circleObject.Draw();
-			rectangleObject.Draw();
+			world.Update();
 
-			circleObject.Update();
-			rectangleObject.Update();
-
-		EndDrawing();
+			EndDrawing();
 	}
 
 	CloseWindow();

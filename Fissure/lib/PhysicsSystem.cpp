@@ -1,30 +1,22 @@
 #include "PhysicsSystem.hpp"
 #include "CollisionSystem.hpp"
-#include <iostream>
 #include <raylib.h>
 #include <raymath.h>
 #include <tuple>
 
-PhysicsSystem::PhysicsSystem(vector<GameObject *> gameObjects, CollisionSystem* collisionSystem){
-	this->gameObjects = gameObjects;
+PhysicsSystem::PhysicsSystem(vector<unique_ptr<GameObject>>& gameObjects, CollisionSystem* collisionSystem) : gameObjects(gameObjects) {
 	this->collisionSystem = collisionSystem;
 
 	this->collisionSystem->AddListener(this);
 
-	for(GameObject* gameObject : gameObjects){
-		ICollider* collider = gameObject->GetComponent<ICollider>();
-		if(collider){
-			Rigidbody* rb = gameObject->GetComponent<Rigidbody>();
-			if(rb){
-				this->collRbMap.insert({collider, rb});
-			}
-		}
+	for(auto& gameObject : gameObjects){
+		RegisterObject(gameObject.get());
 	}
 }
 
 void PhysicsSystem::PhysicsHandler(){
 	for(int i = 0; i < (int)gameObjects.size(); i++){
-		GameObject* object = gameObjects[i];
+		GameObject* object = gameObjects.at(i).get();
 		Rigidbody* rb = object->GetComponent<Rigidbody>();
 
 		if(!rb || rb->GetType() == RigidbodyType::Static || rb->GetType() == RigidbodyType::Kinematic) continue;
@@ -146,4 +138,18 @@ tuple<Vector2, Vector2> PhysicsSystem::ResolveCollision(Rigidbody* rb1, Rigidbod
 void PhysicsSystem::OnCollisionSystemExit(ICollider* colliderA, ICollider* colliderB) {
 	colliderA->OnCollisionExit(colliderB);
 	colliderB->OnCollisionExit(colliderA);
+}
+
+void PhysicsSystem::RemoveTrackedCollider(ICollider* collider){
+	collRbMap.erase(collider);
+}
+
+void PhysicsSystem::RegisterObject(GameObject* gameObject){
+	ICollider* collider = gameObject->GetComponent<ICollider>();
+	if(collider){
+		Rigidbody* rb = gameObject->GetComponent<Rigidbody>();
+		if(rb){
+			this->collRbMap.insert({collider, rb});
+		}
+	}
 }

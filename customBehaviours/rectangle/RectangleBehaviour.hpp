@@ -1,7 +1,5 @@
 #pragma once
-#include "../../components/ICustomBehaviour.hpp"
-#include "../../components/collider/ICollisionListener.hpp"
-#include "../../components/gameObject/GameObject.hpp"
+#include "../Fissure/Fissure.hpp"
 
 /**
  * @brief Sample custom behaviour: flashes the object red while it is colliding.
@@ -32,16 +30,6 @@ class RectangleBehaviour : public ICustomBehaviour, public ICollisionListener{
 		 */
 		void Update() override;
 
-		/**
-		 * @brief Collision reaction: sets the owner's drawable color to RED.
-		 * @param self The owner's collider that fired the event.
-		 * @param other The collider it collided with.
-		 */
 		void OnCollisionEnter(ICollider* other) const override;
-		/**
-		 * @brief Collision reaction: sets the owner's drawable color back to WHITE.
-		 * @param self The owner's collider that fired the event.
-		 * @param other The collider it collided with.
-		 */
 		void OnCollisionExit(ICollider* other) const override;
 };

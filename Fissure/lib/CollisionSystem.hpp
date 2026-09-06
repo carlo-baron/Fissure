@@ -27,7 +27,7 @@ using namespace std;
 class CollisionSystem{
 	private:
 		vector<ICollisionSystemListener*> listeners;
-		vector<GameObject*> gameObjects;
+		vector<unique_ptr<GameObject>>& gameObjects;
 		set<pair<ICollider*, ICollider*>> activeCollisions;
 		/**
 		 * @brief Records a pair as currently colliding.
@@ -63,7 +63,7 @@ class CollisionSystem{
 		 * CollisionHandler() is called.
 		 * @param gameObjects The objects to test. Non-owning.
 		 */
-		CollisionSystem(vector<GameObject*> gameObjects);
+		CollisionSystem(vector<unique_ptr<GameObject>>& gameObjects);
 
 		/**
 		 * @brief Runs collision detection and response for every pair of objects, once per frame.
@@ -123,4 +123,6 @@ class CollisionSystem{
 		void NotifyListenersEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv);
 		void NotifyListenersStay(ICollider* colliderA, ICollider* colliderB, Vector2 mtv);
 		void NotifyListenersExit(ICollider* colliderA, ICollider* colliderB);
+
+		void RemoveTrackedCollider(ICollider* collider);
 };
