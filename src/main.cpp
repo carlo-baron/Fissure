@@ -1,14 +1,6 @@
-#include "CircleRenderer.hpp"
-#include "GameTransform.hpp"
-#include "RectangleRenderer.hpp"
-#include "physics/Rigidbody.hpp"
-#include "raylib.h"
-#include <memory>
-#include <string>
-#include <vector>
-#include "../components/gameObject/GameObject.hpp"
-#include "../lib/GameWorld.hpp"
+#include "../Fissure.hpp"
 #include "rectangle/RectangleBehaviour.hpp"
+#include <string>
 
 using namespace std;
 
