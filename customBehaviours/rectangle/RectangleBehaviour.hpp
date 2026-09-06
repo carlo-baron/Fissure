@@ -1,7 +1,5 @@
 #pragma once
-#include "../../components/ICustomBehaviour.hpp"
-#include "../../components/collider/ICollisionListener.hpp"
-#include "../../components/gameObject/GameObject.hpp"
+#include "../Fissure/Fissure.hpp"
 
 /**
  * @brief Sample custom behaviour: flashes the object red while it is colliding.
