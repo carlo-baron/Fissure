@@ -17,7 +17,7 @@
  */
 class PhysicsSystem : public ICollisionSystemListener{
 	private:
-		vector<GameObject*> gameObjects;
+    vector<unique_ptr<GameObject>>& gameObjects;
 		unordered_map<ICollider*, Rigidbody*> collRbMap;
 		float gravityAcceleration = 5;
 		CollisionSystem* collisionSystem;
@@ -36,7 +36,7 @@ class PhysicsSystem : public ICollisionSystemListener{
 		 * simply produce no momentum change.
 		 * @param gameObject The objects to simulate. Non-owning.
 		 */
-		PhysicsSystem(vector<GameObject*> gameObject, CollisionSystem* collisionSystem);
+		PhysicsSystem(vector<unique_ptr<GameObject>>& gameObjects, CollisionSystem* collisionSystem);
 
 		/**
 		 * @brief Advances the simulation by one frame.
@@ -53,4 +53,7 @@ class PhysicsSystem : public ICollisionSystemListener{
 		void OnCollisionSystemEnter(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) override;
 		void OnCollisionSystemStay(ICollider* colliderA, ICollider* colliderB, Vector2 mtv) override;
 		void OnCollisionSystemExit(ICollider* colliderA, ICollider* colliderB) override;
+
+		void RemoveTrackedCollider(ICollider* collider);
+		void RegisterObject(GameObject* gameObject);
 };

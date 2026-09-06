@@ -24,6 +24,7 @@ class GameObject{
 		unique_ptr<ICollider> collider;
 		unique_ptr<Rigidbody> rigidbody;
 		vector<unique_ptr<ICustomBehaviour>> customBehaviours;
+		bool markForDestruction = false;
 
 	public:
 		/**
@@ -58,6 +59,8 @@ class GameObject{
 		 */
 		void Update();
 
+		void Destroy();
+
 		/**
 		 * @brief Returns the requested component, or nullptr if the object doesn't have one.
 		 *
@@ -68,6 +71,8 @@ class GameObject{
 		 */
 		template<typename T>
 		T* GetComponent();
+
+		bool IsMarkedForDestruction();
 };
 
 

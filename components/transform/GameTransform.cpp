@@ -1,6 +1,7 @@
 #include "GameTransform.hpp"
 #include <algorithm>
 #include <raymath.h>
+#include <vector>
 
 GameTransform::GameTransform(Vector2 position, Vector2 origin, Vector2 rotation, float scale){
 	this->origin = origin;
@@ -88,6 +89,10 @@ void GameTransform::SetParent(GameTransform* parent){
 	} else {
 		this->position = currentWorldPos;
 	}
+}
+
+std::vector<GameTransform*> GameTransform::GetChildren(){
+	return this->children;
 }
 
 GameTransform* GameTransform::GetChild(int index){

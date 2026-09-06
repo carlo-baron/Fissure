@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    g++ -std=c++17 $(find src components factory customBehaviours helpers -name "*.cpp") \
+    g++ -std=c++17 -g $(find src components factory customBehaviours helpers -name "*.cpp") \
         $(find lib -name "*.cpp" 2>/dev/null) \
 				-Ihelpers \
 				-IcustomBehaviours \
@@ -16,7 +16,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         -o run \
         -lraylib -lm -lpthread -ldl
 else
-    g++ -std=c++17 $(find src components factory customBehaviours helpers -name "*.cpp") \
+    g++ -std=c++17 -g $(find src components factory customBehaviours helpers -name "*.cpp") \
         $(find lib -name "*.cpp" 2>/dev/null) \
 				-Ihelpers \
 				-IcustomBehaviours \
